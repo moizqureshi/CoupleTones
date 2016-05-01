@@ -22,5 +22,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+
+    // Dependency for Google Sign-In
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
+
     compile 'com.android.support:appcompat-v7:23.3.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
