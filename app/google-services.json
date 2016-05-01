@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "927320876047",
+    "project_id": "coupletones-9d6c2"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927320876047:android:8fca68fd7d73e91d",
+        "android_client_info": {
+          "package_name": "com.example.moizqureshi.coupletones"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927320876047-g9s85ugs40ditskqqq49phqb161dsqs8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.moizqureshi.coupletones",
+            "certificate_hash": "93ECF1DBD36DC489B94DDBD8EF1F8953EA4D01CD"
+          }
+        },
+        {
+          "client_id": "927320876047-undf7ujnif98rjqlir7vva2iqkhruj3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALc2ispEzzGNCZsMvz72uo4ENFDEtLFYA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
