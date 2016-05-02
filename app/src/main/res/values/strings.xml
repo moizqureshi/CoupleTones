@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">CoupleTones</string>
 
-    <string name="title_text">Google Sign-In\nQuickstart</string>
+    <string name="title_text">CoupleTones\nGoogle Sign-In</string>
 
     <!-- Sign-in status messages -->
     <string name="signed_in_fmt">Signed in as: %s</string>
