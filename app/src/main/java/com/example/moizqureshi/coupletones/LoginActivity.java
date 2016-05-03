@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
-            updateUI(true);
+//            updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
