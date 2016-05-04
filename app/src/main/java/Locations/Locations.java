@@ -13,13 +13,11 @@ import com.google.gson.Gson;
  * Created by Alina on 5/1/2016.
  */
 public class Locations {
-
+    private ArrayList
         public static final String PREFS_NAME = "LOCATION_APP";
         public static final String FAVORITES = "Location_Favorite";
 
-        public Locations() {
-            super();
-        }
+        public Locations() {}
 
         // This four methods are used for maintaining favorites.
         public void saveFavoriteLocations(Context context, List<String> favorites) {
