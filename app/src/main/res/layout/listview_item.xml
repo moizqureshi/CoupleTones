@@ -3,16 +3,23 @@
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants">
 
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This is row number 15"
-        android:id="@+id/list_item_text" />
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text=" "
+        android:id="@+id/list_item_text"
+        android:layout_marginLeft="20dp"
+        android:layout_centerVertical="true"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/deletion"
         android:layout_alignParentRight="true"
         android:id="@+id/list_item_botton"/>
+
 </RelativeLayout>

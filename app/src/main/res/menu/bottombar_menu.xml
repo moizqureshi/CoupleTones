@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottomBarItemOne"
+        android:title="One" />
+    <item
+        android:id="@+id/bottomBarItemTwo"
+        android:title="Two" />
+    <item
+        android:id="@+id/bottomBarItemThree"
+        android:title="Three" />
+</menu>

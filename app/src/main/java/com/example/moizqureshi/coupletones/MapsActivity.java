@@ -9,23 +9,33 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.LayoutInflater;
-import android.widget.ArrayAdapter;
+import android.view.MotionEvent;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,10 +43,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabClickListener;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -44,47 +55,129 @@ import static java.lang.Math.toRadians;
 
 
 /**
- *  Main page of the map
+ * Main page of the map
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Marker onSearchLocationMarker;
+    private ArrayAdapter mAdapter;
 
-    //private TextView mTapTextView;
     private Button mSearchButton;
+    private Button mMenuButton1, mMenuButton2, mMenuButton3;
     private EditText mSearchView;
     private ListView mListView;
 
+    private BottomBar mBottomBar;
+
+    private int position = 0;
+
     //Create the dummy list for testing, need to change later
+    //TODO: Change to the actual locations list
     private ArrayList<String> dummylist = new ArrayList<>();
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        this.fillListFromUser();
+        /*
+            Setting up the map fragment
+         */
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        //mTapTextView = (TextView) findViewById(R.id.latlongLocation);
+        /*
+            Setting up the menu tab buttons
+         */
+        mMenuButton1 = (Button) findViewById(R.id.button1);
+        mMenuButton2 = (Button) findViewById(R.id.button2);
+        mMenuButton3 = (Button) findViewById(R.id.button3);
+        /*
+            Setting up search text field and button
+         */
         mSearchButton = (Button) findViewById(R.id.searchButton);
         mSearchView = (EditText) findViewById(R.id.searchView);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        /*
+            Setting up the list of locations
+         */
+        mAdapter = new MyListAdapter(this, R.layout.listview_item, dummylist);
         mListView = (ListView) findViewById(R.id.listView);
-        this.fillListFromUser();
-        mListView.setAdapter(new MyListAdapter(this, R.layout.listview_item, dummylist));
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setAdapter(mAdapter);
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //TODO:Need to show the selected location on the map
+//                Toast.makeText(MapsActivity.this, "List item was clicked at " + (position + 1), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+        /*
+            Setting up the bottom tab bar
+         */
+        mBottomBar = BottomBar.attach(this, savedInstanceState);
+        mBottomBar.setActiveTabColor("#009688");
+        mBottomBar.setItemsFromMenu(R.menu.bottombar_menu, new OnMenuTabClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MapsActivity.this, "List item was clicked at " + (position+1), Toast.LENGTH_SHORT).show();
+            public void onMenuTabSelected(@IdRes int menuItemId) {
+                if (menuItemId == R.id.bottomBarItemOne) {
+                    // The user selected item number one.
+                    mMenuButton1.setVisibility(View.VISIBLE);
+                    mMenuButton2.setVisibility(View.VISIBLE);
+                    mMenuButton3.setVisibility(View.VISIBLE);
+                    mSearchView.setVisibility(View.GONE);
+                    mSearchButton.setVisibility(View.GONE);
+                    mListView.setVisibility(View.GONE);
+                    findViewById(R.id.map).setVisibility(View.GONE);
+
+                }
+                else if (menuItemId == R.id.bottomBarItemTwo) {
+                    // The user selected item number two.
+                    mMenuButton1.setVisibility(View.GONE);
+                    mMenuButton2.setVisibility(View.GONE);
+                    mMenuButton3.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.VISIBLE);
+                    mSearchButton.setVisibility(View.VISIBLE);
+                    mListView.setVisibility(View.GONE);
+                    findViewById(R.id.map).setVisibility(View.VISIBLE);
+                }
+                else if (menuItemId == R.id.bottomBarItemThree) {
+                    // The user selected item number three.
+                    mMenuButton1.setVisibility(View.GONE);
+                    mMenuButton2.setVisibility(View.GONE);
+                    mMenuButton3.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.GONE);
+                    mSearchButton.setVisibility(View.GONE);
+                    mListView.setVisibility(View.VISIBLE);
+                    findViewById(R.id.map).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onMenuTabReSelected(@IdRes int menuItemId) {
+                if (menuItemId == R.id.bottomBarItemOne) {
+                    // The user reselected item number one, scroll your content to top.
+                }
             }
         });
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
+
     /**
-     *  Create the map and relevant iterms
+     * Create the map and relevant iterms
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -92,7 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Initialize the map and the camera
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.8800604,-117.2362022), 13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.8800604, -117.2362022), 13));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         /*
             Setup OnMapClickListener
@@ -106,21 +199,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  */
                 //mTapTextView.setText("This location is at: " + latLng);
 
-                showPopupDialog(latLng);
+                showAddLocationDialog(latLng);
 
             }
         };
         mMap.setOnMapClickListener(mapClickListener);
 
         /*
-            Track current location and update the marker.
-            TODO:Need to notify user when user is closed to favorite location(s).
+            Track current location.
          */
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                //mMap.clear();
-                //mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("updated path"));
                 /*
                     Implementing favorite location(s) detection
                  */
@@ -147,13 +237,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                }
             }
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
 
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
 
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
-
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         String locationProvider = LocationManager.GPS_PROVIDER;
         //Checking permission
@@ -172,7 +264,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Implementing Searching by address.
             TODO: Need to implement adding by address - (Can be done by adding another "add" button)
          */
-        mSearchButton.setOnClickListener(new android.view.View.OnClickListener() {
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -194,6 +286,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     /*
         Helper function for search by address.
      */
@@ -212,6 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
     }
+
     /*
         Helper function to compute the distance between two LatLngs, in Meters.
      */
@@ -219,15 +313,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double earthRadius = 6371009;
         double dLat = toRadians(from.latitude) - toRadians(to.latitude);
         double dLng = toRadians(from.longitude) - toRadians(to.longitude);
-        return ((sin((dLat)*0.5))*(sin((dLat)*0.5))
-                + (sin((dLng)*0.5))*(sin((dLng)*0.5))
+        return ((sin((dLat) * 0.5)) * (sin((dLat) * 0.5))
+                + (sin((dLng) * 0.5)) * (sin((dLng) * 0.5))
                 * cos(from.latitude) * cos(to.latitude)) * earthRadius;
     }
     /*
         Popping up a dialog for user to enter the name of a Fav. Loc.
      */
 
-    protected void showPopupDialog(final LatLng latLng) {
+    protected void showAddLocationDialog(final LatLng latLng) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
 
@@ -260,57 +354,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        if(marker.equals(onSearchLocationMarker)) {
-            showPopupDialog(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+        if (marker.equals(onSearchLocationMarker)) {
+            showAddLocationDialog(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
         }
         return true;
     }
-    /*
-        Adapter for dynamically constructing the listview
-     */
-    protected class MyListAdapter extends ArrayAdapter<String> {
 
-        private int layout;
-        private List<String> myObjects;
-        private MyListAdapter(Context context, int resource, List<String> objects) {
-            super(context, resource, objects);
-            myObjects = objects;
-            layout = resource;
-        }
 
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            ViewHolder mainViewHolder = null;
-            if(convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
-                convertView = inflater.inflate(layout, parent, false);
-                ViewHolder viewHolder = new ViewHolder();
-                viewHolder.title = (TextView) convertView.findViewById(R.id.list_item_text);
-                viewHolder.button = (Button) convertView.findViewById(R.id.list_item_botton);
-                convertView.setTag(viewHolder);
-            }
-            mainViewHolder = (ViewHolder) convertView.getTag();
-            mainViewHolder.button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getContext(), "Button was clicked for list item " + (position+1), Toast.LENGTH_SHORT).show();
-                }
-            });
-            mainViewHolder.title.setText(getItem(position));
 
-            return convertView;
-        }
 
-        protected class ViewHolder {
-
-            TextView title;
-            Button button;
-        }
-    }
     public void fillListFromUser() {
         for (int i = 0; i < 25; i++) {
-            dummylist.add("This is the" + (i+1) + " item");
+            dummylist.add("This is the" + (i + 1) + " item");
         }
     }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        mBottomBar.onSaveInstanceState(outState);
+    }
 }
