@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.content.Intent;
 
+/**
+ * Created by moizqureshi on 5/2/16.
+ */
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -121,9 +124,9 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-            Intent intent = new Intent(this, MapsActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-//            updateUI(true);
+           updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
