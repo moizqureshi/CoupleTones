@@ -123,8 +123,10 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-            Intent intent = new Intent(this, MainActivity.class);
+
+//            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            Intent intent = new Intent(this, MapsActivity.class);
+
             startActivity(intent);
            updateUI(true);
         } else {
@@ -161,7 +163,6 @@ public class LoginActivity extends AppCompatActivity implements
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        // [START_EXCLUDE]
                         updateUI(false);
                         // [END_EXCLUDE]
                     }
