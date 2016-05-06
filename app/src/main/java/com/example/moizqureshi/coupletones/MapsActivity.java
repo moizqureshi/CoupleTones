@@ -3,6 +3,7 @@ package com.example.moizqureshi.coupletones;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,7 +37,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -71,6 +78,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private BottomBar mBottomBar;
 
+    private User currUser;
+    private GoogleApiClient mGoogleApiClient;
+
     private int position = 0;
 
     //Create the dummy list for testing, need to change later
@@ -85,6 +95,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        currUser = makeUser( );
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.fillListFromUser();
@@ -100,6 +112,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMenuButton1 = (Button) findViewById(R.id.button1);
         mMenuButton2 = (Button) findViewById(R.id.button2);
         mMenuButton3 = (Button) findViewById(R.id.button3);
+
+        /*
+            Signing out listener
+         */
+        mMenuButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+
         /*
             Setting up search text field and button
          */
@@ -376,5 +399,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Necessary to restore the BottomBar's state, otherwise we would
         // lose the current tab on orientation change.
         mBottomBar.onSaveInstanceState(outState);
+    }
+
+    private User makeUser( ) {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, null /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        return new User( opr.get().getSignInAccount() );
+
+    }
+
+    private void signOut( ) {
+        //Toast.makeText( getApplicationContext(), (CharSequence) "Entering func", Toast.LENGTH_LONG ).show( );
+
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        // [END_EXCLUDE]
+                    }
+                });
+
+
+        Toast.makeText( getApplicationContext(), (CharSequence) "You are signed out!", Toast.LENGTH_LONG ).show( );
+
     }
 }
