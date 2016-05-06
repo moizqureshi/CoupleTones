@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 
 /**
- * Created by moizqureshi on 5/5/16.
+ * Created by Team 3 on 5/5/16.
  */
 public class ourApplication extends Application {
     public void onCreate(){
