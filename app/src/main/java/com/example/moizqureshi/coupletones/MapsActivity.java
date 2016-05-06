@@ -74,19 +74,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean update = false;
 
     private ImageButton mSearchButton;
-    private Button mMenuButton1, mMenuButton2, mMenuButton3;
+    private TextView mSettingTitle, mAddPartner, mDeletePartner, mSignOut;
     private EditText mSearchView;
     private ListView mListView;
 
     private BottomBar mBottomBar;
 
-
     private User currUser;
     private GoogleApiClient mGoogleApiClient;
 
-
-
-
+    //ArrayList for storing the locations during runtime
     private ArrayList<String> nameOfLocationsList = new ArrayList<>();
 
     /**
@@ -111,14 +108,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*
             Setting up the menu tab buttons
          */
-        mMenuButton1 = (Button) findViewById(R.id.button1);
-        mMenuButton2 = (Button) findViewById(R.id.button2);
-        mMenuButton3 = (Button) findViewById(R.id.button3);
-
+        mSettingTitle = (TextView) findViewById(R.id.settings);
+        mAddPartner = (TextView) findViewById(R.id.addPartner);
+        mDeletePartner = (TextView) findViewById(R.id.deletePartner);
+        mSignOut = (TextView) findViewById(R.id.signOut);
+        /*
+            Add partner listener
+         */
+        mAddPartner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddPartnerDialog();
+            }
+        });
+        /*
+            Delete partner listener
+         */
+        mDeletePartner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeletePartnerDialog();
+            }
+        });
         /*
             Signing out listener
          */
-        mMenuButton3.setOnClickListener(new View.OnClickListener() {
+        mSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signOut();
@@ -149,9 +164,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMenuTabSelected(@IdRes int menuItemId) {
                 if (menuItemId == R.id.bottomBarItemOne) {
                     // The user selected item number one.
-                    mMenuButton1.setVisibility(View.VISIBLE);
-                    mMenuButton2.setVisibility(View.VISIBLE);
-                    mMenuButton3.setVisibility(View.VISIBLE);
+                    mSettingTitle.setVisibility(View.VISIBLE);
+                    if(currUser.getPartnerAccount() != null) {
+                        mAddPartner.setVisibility(View.VISIBLE);
+                        mDeletePartner.setVisibility(View.GONE);
+                    }
+                    else {
+                        mAddPartner.setVisibility(View.GONE);
+                        mDeletePartner.setVisibility(View.VISIBLE);
+                    }
+                    mSignOut.setVisibility(View.VISIBLE);
                     mSearchView.setVisibility(View.GONE);
                     mSearchButton.setVisibility(View.GONE);
                     mListView.setVisibility(View.GONE);
@@ -160,9 +182,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else if (menuItemId == R.id.bottomBarItemTwo) {
                     // The user selected item number two.
-                    mMenuButton1.setVisibility(View.GONE);
-                    mMenuButton2.setVisibility(View.GONE);
-                    mMenuButton3.setVisibility(View.GONE);
+                    mSettingTitle.setVisibility(View.GONE);
+                    mAddPartner.setVisibility(View.GONE);
+                    mDeletePartner.setVisibility(View.GONE);
+                    mSignOut.setVisibility(View.GONE);
                     mSearchView.setVisibility(View.VISIBLE);
                     mSearchButton.setVisibility(View.VISIBLE);
                     mListView.setVisibility(View.GONE);
@@ -170,9 +193,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else if (menuItemId == R.id.bottomBarItemThree) {
                     // The user selected item number three.
-                    mMenuButton1.setVisibility(View.GONE);
-                    mMenuButton2.setVisibility(View.GONE);
-                    mMenuButton3.setVisibility(View.GONE);
+                    mSettingTitle.setVisibility(View.GONE);
+                    mAddPartner.setVisibility(View.GONE);
+                    mDeletePartner.setVisibility(View.GONE);
+                    mSignOut.setVisibility(View.GONE);
                     mSearchView.setVisibility(View.GONE);
                     mSearchButton.setVisibility(View.GONE);
                     mListView.setVisibility(View.VISIBLE);
@@ -349,8 +373,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 * cos(from.latitude) * cos(to.latitude)) * earthRadius;
     }
     /*
-        Popping up a dialog for user to enter the name of a Fav. Loc.
-        And add that location to the list, then update everything
+        Dialog for Adding a Favorite Location
      */
 
     protected void showAddLocationDialog(final LatLng latLng) {
@@ -358,7 +381,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
 
         alert.setTitle("Adding Favorite Location");
-        alert.setMessage("Please enter a name of the location:");
+        alert.setMessage("Please assign a name of the location:");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(MapsActivity.this);
@@ -423,20 +446,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return true;
     }
-
+    /*
+        Function for coping the list from server to local
+     */
     public void fillListFromUser() {
         for (int i = 0; i < currUser.getLocations().locations.size(); i++) {
             nameOfLocationsList.add(currUser.getLocations().locations.get(i).getName());
         }
     }
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Necessary to restore the BottomBar's state, otherwise we would
-        // lose the current tab on orientation change.
-        mBottomBar.onSaveInstanceState(outState);
-    }
+    /*
+        Function for initializing the user
+     */
 
     private User makeUser( ) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -452,7 +472,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return new User( opr.get().getSignInAccount() );
 
     }
-
+    /*
+        Function for signing out
+     */
     private void signOut( ) {
         //Toast.makeText( getApplicationContext(), (CharSequence) "Entering func", Toast.LENGTH_LONG ).show( );
 
@@ -470,6 +492,95 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText( getApplicationContext(), (CharSequence) "You are signed out!", Toast.LENGTH_LONG ).show( );
 
+    }
+    /*
+        Dialog for Adding the partner
+     */
+    protected void showAddPartnerDialog() {
+        //Temporary use for checking if the partner is found
+        final boolean partnerIsFound = false;
+        AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
+
+        alert.setTitle("Add Partner");
+        alert.setMessage("Please enter your partner's Gmail:");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(MapsActivity.this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            String partnerGmail = input.getText().toString();
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //Check if the partner is found
+                if(!partnerIsFound) {
+                    Toast.makeText( getApplicationContext(), (CharSequence) "Partner is not found! Please reenter!", Toast.LENGTH_LONG ).show( );
+                    showAddPartnerDialog();
+                }
+                else {
+                    //Temporary use for adding the partner
+                    mDeletePartner.setVisibility(View.VISIBLE);
+                    mAddPartner.setVisibility(View.GONE);
+                    currUser.setPartnerAccount(partnerGmail);
+                    //TODO:Update the server
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+    /*
+        Dialog for deleting the partner
+     */
+    protected void showDeletePartnerDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
+
+        alert.setTitle("Confirm delete Partner");
+        alert.setMessage("Are you sure want to DELETE your partner?");
+
+
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                mAddPartner.setVisibility(View.VISIBLE);
+                mDeletePartner.setVisibility(View.GONE);
+                currUser.setPartnerAccount(null);
+                //TODO:Also update the server
+            }
+        });
+
+        alert.setNegativeButton("NOOOOO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+    /*
+        Checking if the input is alphanumeric
+     */
+    protected boolean isAlphaNumeric(String s){
+        String pattern= "^[a-zA-Z0-9]+$";
+        return s.matches(pattern);
+    }
+
+    /*
+        Necessary to restore the BottomBar's state
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        mBottomBar.onSaveInstanceState(outState);
     }
 
     /*
@@ -525,8 +636,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Button button;
         }
     }
-    public boolean isAlphaNumeric(String s){
-        String pattern= "^[a-zA-Z0-9]+$";
-        return s.matches(pattern);
-    }
+
 }
