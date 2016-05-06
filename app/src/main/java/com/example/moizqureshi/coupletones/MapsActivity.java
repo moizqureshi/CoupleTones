@@ -467,3 +467,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 }
+/**
+ * if you need partner Id. First call:
+ * manager.fetchPartnerId( );
+ *
+ * then copy past the following:
+ *
+ *
+ final ProgressDialog dialogP=new ProgressDialog(this);
+ dialogP.setMessage("Initializing data");
+ dialogP.setCancelable(false);
+ dialogP.setInverseBackgroundForced(false);
+ dialogP.show();
+
+ final Handler handlerP = new Handler();
+ handlerP.postDelayed(new Runnable() {
+@Override
+public void run() {
+YOUR_VARIABLE_TO_STORE_ID_HERE = manager.getPartnerId( );
+dialogP.hide();
+}
+}, 2000);
+ */

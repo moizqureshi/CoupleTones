@@ -97,7 +97,7 @@ public class DataManager {
         });
     }
 
-    public String getPartnerID( ) {
+    public void fetchPartnerId( ) {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
         query.whereEqualTo("email", user.getPartnerEmail() );
@@ -110,7 +110,9 @@ public class DataManager {
                 }
             }
         });
+    }
 
+    public String getPartnerId( ) {
         return partnerId;
     }
 
