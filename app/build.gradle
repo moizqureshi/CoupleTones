@@ -24,6 +24,7 @@ android {
 }
 
 dependencies {
+    compile 'com.google.code.gson:gson:2.2.4'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
@@ -39,5 +40,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
 
+    androidTestCompile 'org.testng:testng:6.9.6'
 }
 apply plugin: 'com.google.gms.google-services'
