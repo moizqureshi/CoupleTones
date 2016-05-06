@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -35,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.app.ProgressDialog;
 
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.auth.api.Auth;
@@ -51,8 +53,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
+
+import org.json.JSONException;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -83,6 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int position = 0;
 
+
     //Create the dummy list for testing, need to change later
     //TODO: Change to the actual locations list
     private ArrayList<String> dummylist = new ArrayList<>();
@@ -95,11 +104,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        currUser = makeUser( );
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.fillListFromUser();
+
+        currUser = makeUser( );
+        final DataManager manager = new DataManager( currUser );
+        manager.setUp();
+
         /*
             Setting up the map fragment
          */
@@ -196,9 +210,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        //Making a window to make use wait until we initialize data
+        final ProgressDialog dialog=new ProgressDialog(this);
+        dialog.setMessage("Initializing data");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currUser = manager.updateUser();
+                dialog.hide();
+            }
+        }, 3000);
     }
-
-
 
     /**
      * Create the map and relevant iterms
