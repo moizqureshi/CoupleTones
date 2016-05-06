@@ -105,8 +105,10 @@ public class Locations {
     }
 
     public void update( JSONArray dbLocations ) throws JSONException {
-        if( dbLocations == null)
+        if( dbLocations == null) {
             locations = new ArrayList<>(0);
+            return;
+        }
 
         ArrayList<FavLocation> newLocations = new ArrayList<>();
 
