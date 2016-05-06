@@ -53,11 +53,11 @@
                 </EditText>
                 <ImageButton
                     android:id="@+id/searchButton"
-                    android:layout_width="50dp"
-                    android:layout_height="45dp"
+                    android:layout_width="42dp"
+                    android:layout_height="40dp"
                     android:layout_alignBottom="@+id/searchView"
                     android:layout_alignRight="@+id/searchView"
-                    android:src="@drawable/ic_menu_search" />
+                    android:background="@drawable/ic_menu_search" />
 
                 <ListView
                     android:layout_width="match_parent"
