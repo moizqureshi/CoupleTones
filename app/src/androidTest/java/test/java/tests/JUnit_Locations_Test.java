@@ -77,7 +77,6 @@ public class JUnit_Locations_Test extends ActivityInstrumentationTestCase2<Locat
         assertFalse( emptyLocations.remove(1));
         assertTrue( testTwo.remove(1) );
         assertEquals(testTwo.locations.size(), 2);
-
     }
 
 
