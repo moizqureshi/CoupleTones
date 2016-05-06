@@ -38,31 +38,26 @@
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_below="@+id/searchView"
                     android:layout_alignParentStart="true" />
 
                 <EditText
                     android:id="@+id/searchView"
                     android:layout_width="match_parent"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="18dp"
-                    android:hint="Search Location"
+                    android:layout_height="45dp"
+                    android:hint=" Search Location"
                     android:textColor="@android:color/black"
                     android:background="@android:color/white"
-                    android:layout_alignTop="@+id/map"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true">
                 </EditText>
-                <Button
+                <ImageButton
                     android:id="@+id/searchButton"
                     android:layout_width="50dp"
-                    android:layout_height="37dp"
-                    android:layout_alignBaseline="@+id/searchView"
+                    android:layout_height="45dp"
                     android:layout_alignBottom="@+id/searchView"
                     android:layout_alignRight="@+id/searchView"
-                    android:text= "search"
-                    android:textSize="7sp"/>
+                    android:src="@drawable/ic_menu_search" />
 
                 <ListView
                     android:layout_width="match_parent"

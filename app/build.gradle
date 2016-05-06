@@ -10,6 +10,10 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [manifestApplicationId: "${applicationId}",
+                                onesignal_app_id: "17bda3da-e89e-41a6-9148-1ded2b3b3d3b",
+                                onesignal_google_project_number: "927320876047"]
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -29,6 +33,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.roughike:bottom-bar:1.3.3'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
-}
+    compile 'com.parse.bolts:bolts-android:1.+'
+    compile 'com.parse:parse-android:1.+'
+    compile 'com.onesignal:OneSignal:2.+@aar'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
+
+}
 apply plugin: 'com.google.gms.google-services'

@@ -26,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ImageView;
@@ -63,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker onSearchLocationMarker;
     private ArrayAdapter mAdapter;
 
-    private Button mSearchButton;
+    private ImageButton mSearchButton;
     private Button mMenuButton1, mMenuButton2, mMenuButton3;
     private EditText mSearchView;
     private ListView mListView;
@@ -102,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*
             Setting up search text field and button
          */
-        mSearchButton = (Button) findViewById(R.id.searchButton);
+        mSearchButton = (ImageButton) findViewById(R.id.searchButton);
         mSearchView = (EditText) findViewById(R.id.searchView);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         /*
