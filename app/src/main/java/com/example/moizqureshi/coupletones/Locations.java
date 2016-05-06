@@ -2,14 +2,10 @@ package com.example.moizqureshi.coupletones;
 
 import java.util.ArrayList;
 import android.location.Location;
-<<<<<<< HEAD
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-=======
->>>>>>> addlocation
 /**
  * Created by Alina on 5/3/2016.
  */
@@ -25,10 +21,6 @@ public class Locations {
     }
 
     public Locations(ArrayList<FavLocation> newLocations ) {
-<<<<<<< HEAD
-
-=======
->>>>>>> addlocation
         locations = newLocations;
     }
 
@@ -100,7 +92,6 @@ public class Locations {
         return locations.get( position );
     }
 
-<<<<<<< HEAD
     public JSONArray getList( ) throws JSONException {
         JSONArray locations = new JSONArray();
 
@@ -123,13 +114,10 @@ public class Locations {
             newLocations.add( new FavLocation( dbLocations.getString(i) ) );
         }
 
-      locations = newLocations;
+        locations = newLocations;
     }
 
     public int size( ) {
         return locations.size();
     }
-=======
->>>>>>> addlocation
 }
-

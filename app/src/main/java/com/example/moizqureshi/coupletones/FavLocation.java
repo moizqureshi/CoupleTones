@@ -1,3 +1,4 @@
+
 package com.example.moizqureshi.coupletones;
 import android.location.Location;
 
@@ -7,10 +8,24 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Alina on 5/3/2016.
  */
 public class FavLocation {
-    String name;
-    LatLng location;
+    private String name;
+    private LatLng location;
 
-    FavLocation( String newName, LatLng newLocation ) {
+    public FavLocation( String fullString ) {
+        name = fullString.substring( 0, fullString.indexOf('*') - 1 );
+        fullString = fullString.substring( fullString.indexOf('*') + 2 );
+
+        double lat;
+        double lng;
+
+        lat = Double.parseDouble( fullString.substring(0, fullString.indexOf('*') - 1) );
+
+        lng = Double.parseDouble( fullString.substring( fullString.indexOf('*') + 2 ) );
+
+        location = new LatLng( lat, lng );
+    }
+
+    public FavLocation( String newName, LatLng newLocation ) {
         name = newName;
         location = newLocation;
     }
@@ -32,14 +47,14 @@ public class FavLocation {
     }
 
     public String toString( ) {
-        return name.length() + name + longtitude() + latitude();
+        return name + longtitude() + latitude();
     }
 
     private String longtitude( ) {
         return " * " + location.longitude;
     }
 
-    private String latitude( ){
+    private String latitude( ) {
         return " * " + location.latitude;
     }
 }
