@@ -33,18 +33,22 @@ public class LoginActivity extends AppCompatActivity implements
     //private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
 
+    protected ourApplication app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        app = (ourApplication)getApplication();
 
         // Views
         //mStatusTextView = (TextView) findViewById(R.id.status);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+//        findViewById(R.id.sign_out_button).setOnClickListener(this);
+//        findViewById(R.id.disconnect_button).setOnClickListener(this);
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -129,10 +133,10 @@ public class LoginActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, MapsActivity.class);
 
             startActivity(intent);
-           updateUI(true);
+//           updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(false);
+//            updateUI(false);
         }
     }
     // [END handleSignInResult]
@@ -151,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
-                        updateUI(false);
+//                        updateUI(false);
                         // [END_EXCLUDE]
                     }
                 });
@@ -164,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        updateUI(false);
+//                        updateUI(false);
                         // [END_EXCLUDE]
                     }
                 });
@@ -193,18 +197,18 @@ public class LoginActivity extends AppCompatActivity implements
             mProgressDialog.hide();
         }
     }
-
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-        } else {
-            //mStatusTextView.setText(R.string.signed_out);
-
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
-        }
-    }
+//
+//    private void updateUI(boolean signedIn) {
+//        if (signedIn) {
+//            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+//        } else {
+//            //mStatusTextView.setText(R.string.signed_out);
+//
+//            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+//        }
+//    }
 
     @Override
     public void onClick(View v) {
@@ -212,12 +216,12 @@ public class LoginActivity extends AppCompatActivity implements
             case R.id.sign_in_button:
                 signIn();
                 break;
-            case R.id.sign_out_button:
-                signOut();
-                break;
-            case R.id.disconnect_button:
-                revokeAccess();
-                break;
+//            case R.id.sign_out_button:
+//                signOut();
+//                break;
+//            case R.id.disconnect_button:
+//                revokeAccess();
+//                break;
         }
     }
 }
