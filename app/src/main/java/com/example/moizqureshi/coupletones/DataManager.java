@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class DataManager {
     User user;
     String partnerId;
+    boolean partnerExists;
 
     DataManager(User user) {
         this.user = user;
@@ -64,19 +65,32 @@ public class DataManager {
 
     public void updatePartnerEmail( User newUser ) {
         user = newUser;
-
         ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
         query.whereEqualTo("email", user.getEmail() );
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
                 if (object == null) { //There isn't a user
-
                 } else {
                     object.put("partnerEmail", user.getPartnerEmail() );
                     object.saveInBackground();
                 }
             }
         });
+    }
+
+    public boolean findPartnerEmail(String partnerEmail) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
+        query.whereEqualTo("email", partnerEmail);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) { //There isn't a user
+                    partnerExists = false;
+                } else {
+                    partnerExists = true;
+                }
+            }
+        });
+        return partnerExists;
     }
 
     public void updateLocations(User newUser, final JSONArray newLocations ) {
@@ -98,7 +112,6 @@ public class DataManager {
     }
 
     public void fetchPartnerId( ) {
-
         ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
         query.whereEqualTo("email", user.getPartnerEmail() );
         query.getFirstInBackground(new GetCallback<ParseObject>() {
