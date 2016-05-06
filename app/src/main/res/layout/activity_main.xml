@@ -2,29 +2,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:orientation="vertical" android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-                <Button
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
+                    android:background="#3d5bd6"
+                    android:text="Settings"
+                    android:textSize="35dp"
+                    android:textStyle="bold"
+                    android:textColorHighlight="@color/white"
+                    android:id="@+id/settings"
+                    android:gravity="center"
+                    android:fontFamily="@string/title_text"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
                     android:text="Add Partner"
-                    android:id="@+id/button1"
-                    android:layout_weight="0.31" />
+                    android:textSize="50dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:id="@+id/addPartner"
+                    android:clickable="true" />
 
-                <Button
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button2"
-                    android:layout_weight="0.31"
-                    android:text="Delete Partner" />
+                    android:layout_height="250dp"
+                    android:text="Delete Partner"
+                    android:textSize="50dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:id="@+id/deletePartner"
+                    android:clickable="true"/>
 
-                <Button
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Signout"
-                    android:id="@+id/button3"
-                    android:layout_weight="0.31" />
+                    android:layout_height="200dp"
+                    android:text="Sign Out"
+                    android:textSize="50dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:id="@+id/signOut" />
         </LinearLayout>
 
         <RelativeLayout

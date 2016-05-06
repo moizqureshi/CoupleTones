@@ -10,6 +10,8 @@ public class User {
     GoogleSignInAccount gAccount;
     String username;
     Locations locations;
+    //Temporary used, needed to delete later
+    String partnerAccount;
 
     User( GoogleSignInAccount argAcc ) {
         gAccount = argAcc;
@@ -28,6 +30,11 @@ public class User {
     public Locations getLocations( ) {
         return locations;
     }
+
+    //Temporary used, needed to delete later
+    public String getPartnerAccount() { return partnerAccount;}
+    //Temporary used, needed to delete later
+    public void setPartnerAccount(String account) { partnerAccount = account;}
 
     public void setUsername( String newUsername ) {
         username = newUsername;
