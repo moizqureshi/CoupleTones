@@ -4,39 +4,53 @@ package com.example.moizqureshi.coupletones;
  * Created by moizqureshi on 5/3/16.
  */
 import android.net.Uri;
+import android.util.Log;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class User {
-    GoogleSignInAccount gAccount;
-    String username;
-    Locations locations;
+    private String email;
+    private String partnerEmail;
+    private Locations locations;
 
-    User( GoogleSignInAccount argAcc ) {
-        gAccount = argAcc;
-        username = argAcc.getDisplayName();
+    public User( ) {
+        email = null;
+        partnerEmail = new String("--");
         locations = new Locations( );
     }
 
-    public GoogleSignInAccount getAccount( ) {
-        return gAccount;
+    public User( GoogleSignInAccount newAccount ) {
+        email = newAccount.getEmail();
+        partnerEmail = new String("--");
+        locations = new Locations( );
     }
 
-    public String getUsername( ) {
-        return username;
+    public String getEmail( ) {
+        return email;
+    }
+
+    public String getPartnerEmail( ) {
+        return partnerEmail;
     }
 
     public Locations getLocations( ) {
         return locations;
     }
 
-    public void setUsername( String newUsername ) {
-        username = newUsername;
+    public void setPartnerEmail( String newPartnerEmail ) {
+        partnerEmail = newPartnerEmail;
     }
 
-    public boolean saveInfo( ) {
-        /*
-            HANDLES SHAREDPREFERENCE
-         */
-        return false;
+    public boolean removePartner( ) {
+        if( !hasPartner( ) )
+            return false;
+
+        partnerEmail = new String("--");
+        return true;
     }
+
+    public boolean hasPartner( ) {
+        return !(partnerEmail.equals("--"));
+    }
+
 }
