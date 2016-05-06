@@ -13,15 +13,15 @@ import java.util.ArrayList;
  */
 public class JUnit_Locations_Test  {
 
-    Locations testLocations;
-
     @Before
     public void setUp(){
-        Locations testOne;
-        Locations testTwo;
-        Locations testThree;
+        Locations testOne = new Locations();
+
         int size = 5;
+        Locations testTwo = new Locations( size );
+
         ArrayList<FavLocation> testThreeParam = new ArrayList<>(size);
+        Locations testThree = new Locations( testThreeParam );
 
     }
 

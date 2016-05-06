@@ -8,15 +8,15 @@ import android.location.Location;
 public class Locations {
     ArrayList<FavLocation> locations;
 
-    Locations( int size ) {
+    public Locations( int size ) {
         locations = new ArrayList<>(size);
     }
 
-    Locations( ) {
+    public Locations( ) {
         locations = new ArrayList<>(0);
     }
 
-    Locations( ArrayList<FavLocation> newLocations ) {
+    public Locations( ArrayList<FavLocation> newLocations ) {
         locations = newLocations;
     }
 
