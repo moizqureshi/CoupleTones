@@ -1,11 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bottomBarItemOne"
-        android:title="One" />
+        android:icon="@drawable/ic_friends"
+        android:title="User" />
     <item
         android:id="@+id/bottomBarItemTwo"
-        android:title="Two" />
+        android:icon="@drawable/ic_nearby"
+        android:title="Map" />
     <item
         android:id="@+id/bottomBarItemThree"
-        android:title="Three" />
+        android:icon="@drawable/ic_favorites"
+        android:title="Favorite" />
 </menu>

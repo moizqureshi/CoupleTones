@@ -10,14 +10,16 @@
         android:text=" "
         android:id="@+id/list_item_text"
         android:layout_marginLeft="20dp"
-        android:layout_centerVertical="true"
-        android:textSize="20dp"
+        android:layout_marginTop="11dp"
+        android:elegantTextHeight="true"
+        android:textSize="28dp"
         android:textStyle="bold"/>
 
     <Button
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="9dp"
         android:background="@drawable/deletion"
         android:layout_alignParentRight="true"
         android:id="@+id/list_item_botton"/>
