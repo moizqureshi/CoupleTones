@@ -12,11 +12,13 @@ public class User {
 <<<<<<< HEAD
     private String email;
     private String partnerEmail;
+    private String partnerId;
     private Locations locations;
 
     public User( ) {
         email = null;
         partnerEmail = new String("--");
+        partnerId = null;
         locations = new Locations( );
     }
 =======
@@ -41,12 +43,20 @@ public class User {
         return partnerEmail;
     }
 
+    public String getPartnerId() {
+        return partnerId;
+    }
+
     public Locations getLocations( ) {
         return locations;
     }
 
 <<<<<<< HEAD
     public void setPartnerEmail( String newPartnerEmail ) {
+        if (newPartnerEmail == null) {
+            partnerEmail ="--";
+            return;
+        }
         partnerEmail = newPartnerEmail;
 =======
     //Temporary used, needed to delete later
@@ -59,11 +69,21 @@ public class User {
 >>>>>>> addlocation
     }
 
+    public void setPartnerId(String newPartnerId) {
+        if (newPartnerId == null){
+            partnerId = "--";
+            return;
+        }
+        partnerId = newPartnerId;
+
+    }
+
     public boolean removePartner( ) {
         if( !hasPartner( ) )
             return false;
 
         partnerEmail = new String("--");
+        partnerId = new String("--");
         return true;
     }
 
