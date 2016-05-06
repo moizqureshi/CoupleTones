@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,8 +90,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomBar mBottomBar;
 
     private User currUser;
+    private String temp;
     private GoogleApiClient mGoogleApiClient;
 
+    DataManager manager;
 
     //ArrayList for storing the locations during runtime
     private ArrayList<String> nameOfLocationsList = new ArrayList<>();
@@ -111,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.fillListFromUser();
 
         currUser = makeUser( );
-        final DataManager manager = new DataManager( currUser );
+        manager = new DataManager( currUser );
         manager.setUp();
 
         /*
@@ -181,7 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // The user selected item number one.
                     mSettingTitle.setVisibility(View.VISIBLE);
                     //TODO: Need to somehow check if there is a partner for currUser
-                    if(currUser.getPartnerAccount() != null) {
+                    if(currUser.hasPartner()) {
                         mAddPartner.setVisibility(View.VISIBLE);
                         mDeletePartner.setVisibility(View.GONE);
                     }
@@ -233,6 +236,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+//        mMenuButton1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showAddPartnerialog();
+//            }
+//        });
+//
+//        mMenuButton2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!currUser.hasPartner()) {
+//                    Toast.makeText( getApplicationContext(), (CharSequence) "Not currently paired with anyone!", Toast.LENGTH_LONG ).show( );
+//                }
+//                Toast.makeText( getApplicationContext(), (CharSequence) "Removed partner:", Toast.LENGTH_LONG ).show( );
+//                currUser.removePartner();
+//                manager.updatePartnerEmail(currUser);
+//            }
+//        });
+//
+//        mMenuButton3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signOut();
+//            }
+//        });
+
+
         //Making a window to make use wait until we initialize data
         final ProgressDialog dialog=new ProgressDialog(this);
         dialog.setMessage("Initializing data");
@@ -249,6 +279,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, 3000);
     }
+
+
 
     /**
      * Create the map and relevant iterms
@@ -361,6 +393,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
+
+    protected void showAddPartnerialog() {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
+
+        alert.setTitle("Pair a partner");
+        alert.setMessage("Please enter your partner's email:");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(MapsActivity.this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if(!input.getText().toString().equals("")) {
+                    if (manager.findPartnerEmail(input.getText().toString()))
+                        currUser.setPartnerEmail(input.getText().toString());
+                    else {
+                        Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                } else {
+                    currUser.setPartnerEmail("--");
+                }
+
+                manager.updatePartnerEmail(currUser);
+
+                manager.fetchPartnerId();
+                setPartnerProgressDialog();
+                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
 
     /*
         Helper function for search by address.
@@ -552,7 +628,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mDeletePartner.setVisibility(View.VISIBLE);
                     mAddPartner.setVisibility(View.GONE);
                     currUser.setPartnerAccount(partnerGmail);
-                    //TODO:Update the server
                 }
             }
         });
@@ -578,14 +653,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
+
+                if (!currUser.hasPartner()) {
+                    Toast.makeText( getApplicationContext(), (CharSequence) "Not currently paired with anyone!", Toast.LENGTH_LONG ).show( );
+                }
+                Toast.makeText( getApplicationContext(), (CharSequence) "Removed partner:", Toast.LENGTH_LONG ).show( );
+                currUser.removePartner();
+                manager.updatePartnerEmail(currUser);
+
                 mAddPartner.setVisibility(View.VISIBLE);
                 mDeletePartner.setVisibility(View.GONE);
                 currUser.setPartnerAccount(null);
-                //TODO:Also update the server
             }
         });
 
-        alert.setNegativeButton("NOOOOO", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
             }
@@ -667,6 +749,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
+    void setPartnerProgressDialog() {
+        final ProgressDialog dialogP=new ProgressDialog(this);
+        dialogP.setMessage("Initializing data");
+        dialogP.setCancelable(false);
+        dialogP.setInverseBackgroundForced(false);
+        dialogP.show();
+
+        final Handler handlerP = new Handler();
+        handlerP.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currUser.setPartnerId(manager.getPartnerId( ));
+                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerId(), Toast.LENGTH_LONG ).show( );
+
+                dialogP.hide();
+            }
+        }, 1500);
+    }
 }
 /**
  * if you need partner Id. First call:
