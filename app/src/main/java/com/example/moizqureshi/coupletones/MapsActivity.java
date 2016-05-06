@@ -71,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Marker onSearchLocationMarker;
     private ArrayAdapter mAdapter;
+    private boolean update = false;
 
     private ImageButton mSearchButton;
     private Button mMenuButton1, mMenuButton2, mMenuButton3;
@@ -223,7 +224,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Track current location.
          */
         LocationListener locationListener = new LocationListener() {
-            String locName = null;
+            ArrayList<String> locNames = new ArrayList<>();
             @Override
             public void onLocationChanged(Location location) {
                 /*
@@ -239,18 +240,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     //Checking if user is visiting.
                     // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
-                    if (distanceBetween(new LatLng(location.getLatitude(),
-                            location.getLongitude()), currUser.getLocations().locations.get(i).getLocation()) <= 161) {
-                        if(locName.compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
-                            //TODO: Send the notification
-                            locName = currUser.getLocations().locations.get(i).getName();
+                    if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                            currUser.getLocations().locations.get(i).getLocation()) <= 161) {
+                        for(int j = 0; j < locNames.size(); j++) {
+                            if (locNames.get(j).compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
+                                //TODO: Send the notification
+                                locNames.add(currUser.getLocations().locations.get(i).getName());
+                            }
                         }
                     }
                     //Detect if the user has left
-                    if(distanceBetween(new LatLng(location.getLatitude(),
-                            location.getLongitude()), currUser.getLocations().searchLoc(locName).getLocation()) > 161)
-                    {
-                        locName = null;
+                    for(int k = 0; k < locNames.size(); k++) {
+                        if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                                currUser.getLocations().searchLoc(locNames.get(k)).getLocation()) > 161) {
+                            locNames.remove(k);
+                        }
                     }
                 }
             }
@@ -294,9 +298,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // Getting a maximum of 3 Address that matches the input
                     // text
                     addresses = geocoder.getFromLocationName(g, 3);
-                    if (addresses != null && !addresses.equals(""))
+                    if (addresses != null && !addresses.equals("")) {
                         searchAddresses(addresses);
-
+                    }
                 } catch (Exception e) {
 
                 }
@@ -314,10 +318,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         String.format("%s, %s", address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "", address.getCountryName());
 
-
-        onSearchLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(String.format("%s, %s",
-                address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
-                address.getCountryName())));
+        //mMap.clear();
+        if( !update ) {
+            onSearchLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(String.format("%s, %s",
+                    address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
+                    address.getCountryName())));
+            update = true;
+        }
+        else {
+            onSearchLocationMarker.hideInfoWindow();
+            onSearchLocationMarker.setPosition(latLng);
+            onSearchLocationMarker.setTitle(String.format("%s, %s",
+                    address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
+                    address.getCountryName()));
+        }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
@@ -351,27 +365,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         alert.setView(input);
 
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                boolean duplicateNameOrLocation = false;
-                String locName = input.getText().toString();
+                if (isAlphaNumeric(input.getText().toString())) {
+                    boolean duplicateNameOrLocation = false;
+                    String locName = input.getText().toString();
 
-                for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
-                    if((locName.compareTo(currUser.getLocations().get(i).getName()) == 0)
-                            || (distanceBetween(latLng, currUser.getLocations().get(i).location)) < 322)
-                        duplicateNameOrLocation = true;
+                    for (int i = 0; i < currUser.getLocations().locations.size(); i++) {
+                    /*
+                        No duplicate name
+                        And not allowing adding location that close to an existing location by 0.2 mile which is 362 meters
+                     */
+
+                        if ((locName.compareTo(currUser.getLocations().get(i).getName()) == 0)
+                                || (distanceBetween(latLng, currUser.getLocations().get(i).getLocation()) < 362))
+                            duplicateNameOrLocation = true;
+                    }
+                    if (!duplicateNameOrLocation) {
+                        //Adding the locations here
+                        Toast.makeText(getApplicationContext(), "Location Added", Toast.LENGTH_SHORT).show();
+
+                        currUser.getLocations().add(new FavLocation(locName, latLng));
+                        //TODO: Need to save the info on server
+
+                        //Updating local list
+                        nameOfLocationsList.add(locName);
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getApplicationContext(), (CharSequence) "You already have the same name or the same location", Toast.LENGTH_LONG).show();
+                    }
                 }
-                if(!duplicateNameOrLocation) {
-                    //Adding the locations here
-
-                    currUser.getLocations().add(new FavLocation(locName, latLng));
-                    //TODO: Need to save the info on server
-
-                    //Updating local list
-                    nameOfLocationsList.add(locName);
-                    mAdapter.notifyDataSetChanged();
-                }
-                else {
-                    Toast.makeText( getApplicationContext(), (CharSequence) "You already have the same name or same location", Toast.LENGTH_LONG ).show( );
+                else
+                {
+                    showAddLocationDialog(latLng);
+                    Toast.makeText(getApplicationContext(), (CharSequence) "Input invalid", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -484,7 +511,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     nameOfLocationsList.remove(position);
                     mAdapter.notifyDataSetChanged();
 
-                    Toast.makeText(getContext(), "Button was clicked for list item " + (position + 1), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Location: " + locName + " deleted", Toast.LENGTH_SHORT).show();
                 }
             });
             mainViewHolder.title.setText(getItem(position));
@@ -497,5 +524,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             TextView title;
             Button button;
         }
+    }
+    public boolean isAlphaNumeric(String s){
+        String pattern= "^[a-zA-Z0-9]+$";
+        return s.matches(pattern);
     }
 }
