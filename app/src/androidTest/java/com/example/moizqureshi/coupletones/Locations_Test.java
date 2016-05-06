@@ -5,26 +5,26 @@ import android.location.Location;
 /**
  * Created by Alina on 5/3/2016.
  */
-public class Locations {
-    ArrayList<FavLocation> locations;
+public class Locations_Test {
+    ArrayList<FavLocation_Test> locations;
 
-    public Locations( int size ) {
+    public Locations_Test(int size ) {
         locations = new ArrayList<>(size);
     }
 
-    public Locations( ) {
+    public Locations_Test( ) {
         locations = new ArrayList<>(0);
     }
 
-    public Locations( ArrayList<FavLocation> newLocations ) {
+    public Locations_Test(ArrayList<FavLocation_Test> newLocations ) {
         locations = newLocations;
     }
 
-    public void add( FavLocation newLocation ) {
+    public void add( FavLocation_Test newLocation ) {
         locations.add( newLocation );
     }
 
-    public FavLocation get( int index ) {
+    public FavLocation_Test get( int index ) {
         return locations.get(index);
     }
 
@@ -72,7 +72,7 @@ public class Locations {
         return -1;
     }
 
-    public FavLocation searchLoc( Location location ) {
+    public FavLocation_Test searchLoc( Location location ) {
         int position = searchIdx( location );
         if( position == -1 )
             return null;
@@ -80,7 +80,7 @@ public class Locations {
         return locations.get( position );
     }
 
-    public FavLocation searchLoc( String name ) {
+    public FavLocation_Test searchLoc( String name ) {
         int position = searchIdx( name );
         if( position == -1 )
             return null;

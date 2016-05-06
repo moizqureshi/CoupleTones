@@ -3,11 +3,11 @@ import android.location.Location;
 /**
  * Created by Alina on 5/3/2016.
  */
-public class FavLocation {
+public class FavLocation_Test {
     String name;
     Location location;
 
-    FavLocation( String newName, Location newLocation ) {
+    FavLocation_Test( String newName, Location newLocation ) {
         name = newName;
         location = newLocation;
     }

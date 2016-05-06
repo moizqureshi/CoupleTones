@@ -1,7 +1,7 @@
 package Tests;
 
-import com.example.moizqureshi.coupletones.FavLocation;
-import com.example.moizqureshi.coupletones.Locations;
+import com.example.moizqureshi.coupletones.FavLocation_Test;
+import com.example.moizqureshi.coupletones.Locations_Test;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,13 +15,13 @@ public class JUnit_Locations_Test  {
 
     @Before
     public void setUp(){
-        Locations testOne = new Locations();
+        Locations_Test testOne = new Locations_Test();
 
         int size = 5;
-        Locations testTwo = new Locations( size );
+        Locations_Test testTwo = new Locations_Test( size );
 
-        ArrayList<FavLocation> testThreeParam = new ArrayList<>(size);
-        Locations testThree = new Locations( testThreeParam );
+        ArrayList<FavLocation_Test> testThreeParam = new ArrayList<>(size);
+        Locations_Test testThree = new Locations_Test( testThreeParam );
 
     }
 
