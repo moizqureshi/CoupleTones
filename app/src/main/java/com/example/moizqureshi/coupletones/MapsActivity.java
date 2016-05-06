@@ -70,8 +70,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private BottomBar mBottomBar;
 
-    private int position = 0;
-
     //Create the dummy list for testing, need to change later
     //TODO: Change to the actual locations list
     private ArrayList<String> dummylist = new ArrayList<>();
