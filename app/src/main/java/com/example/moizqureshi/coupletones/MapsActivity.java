@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -85,9 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-    //Create the dummy list for testing, need to change later
-    //TODO: Change to the actual locations list
-    private ArrayList<String> dummylist = new ArrayList<>();
+    private ArrayList<String> nameOfLocationsList = new ArrayList<>();
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -134,16 +133,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*
             Setting up the list of locations
          */
-        mAdapter = new MyListAdapter(this, R.layout.listview_item, dummylist);
+        mAdapter = new MyListAdapter(this, R.layout.listview_item, nameOfLocationsList);
         mListView = (ListView) findViewById(R.id.listView);
         mListView.setAdapter(mAdapter);
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //TODO:Need to show the selected location on the map
-//                Toast.makeText(MapsActivity.this, "List item was clicked at " + (position + 1), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+
 
         /*
             Setting up the bottom tab bar
@@ -219,11 +212,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleMap.OnMapClickListener mapClickListener = new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
-                /*
-                    Tested and Worked.
-                    TODO:Need function call to create and store the favorite location.
-                 */
-                //mTapTextView.setText("This location is at: " + latLng);
 
                 showAddLocationDialog(latLng);
 
@@ -235,6 +223,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Track current location.
          */
         LocationListener locationListener = new LocationListener() {
+            String locName = null;
             @Override
             public void onLocationChanged(Location location) {
                 /*
@@ -245,24 +234,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     A loop go through the list of Fav. Loc. to see if closed to and if visiting
                     "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
                  */
-//                boolean userLeftBefore = true;
-//                for(int i = 0; i < dummylist.size(); i++) {
-//
-//
-//                    //Checking if user is visiting.
-//                    // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
-//                    if (distanceBetween(new LatLng(location.getLatitude(),
-//                            location.getLongitude()), new LatLng(dummylist.get(i).getLatitude(),
-//                            dummylist.get(i).location.getLongitude())) <= 161) {
-//                        if(userLeftBefore) {
-//                            //TODO: Send the notification
-//                            userLeftBefore = false;
-//                        }
-//                    }
-//                    else {
-//                      userLeftBefore = true;
-//                  }
-//                }
+
+                for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
+
+                    //Checking if user is visiting.
+                    // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
+                    if (distanceBetween(new LatLng(location.getLatitude(),
+                            location.getLongitude()), currUser.getLocations().locations.get(i).getLocation()) <= 161) {
+                        if(locName.compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
+                            //TODO: Send the notification
+                            locName = currUser.getLocations().locations.get(i).getName();
+                        }
+                    }
+                    //Detect if the user has left
+                    if(distanceBetween(new LatLng(location.getLatitude(),
+                            location.getLongitude()), currUser.getLocations().searchLoc(locName).getLocation()) > 161)
+                    {
+                        locName = null;
+                    }
+                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -290,7 +280,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /*
             Implementing Searching by address.
-            TODO: Need to implement adding by address - (Can be done by adding another "add" button)
          */
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,6 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     /*
         Popping up a dialog for user to enter the name of a Fav. Loc.
+        And add that location to the list, then update everything
      */
 
     protected void showAddLocationDialog(final LatLng latLng) {
@@ -362,8 +352,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                boolean duplicateNameOrLocation = false;
                 String locName = input.getText().toString();
-                //mTapTextView.setText(locName + latLng);
+
+                for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
+                    if((locName.compareTo(currUser.getLocations().get(i).getName()) == 0)
+                            || (distanceBetween(latLng, currUser.getLocations().get(i).location)) < 322)
+                        duplicateNameOrLocation = true;
+                }
+                if(!duplicateNameOrLocation) {
+                    //Adding the locations here
+
+                    currUser.getLocations().add(new FavLocation(locName, latLng));
+                    //TODO: Need to save the info on server
+
+                    //Updating local list
+                    nameOfLocationsList.add(locName);
+                    mAdapter.notifyDataSetChanged();
+                }
+                else {
+                    Toast.makeText( getApplicationContext(), (CharSequence) "You already have the same name or same location", Toast.LENGTH_LONG ).show( );
+                }
             }
         });
 
@@ -388,12 +397,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-
-
-
     public void fillListFromUser() {
-        for (int i = 0; i < 25; i++) {
-            dummylist.add("This is the" + (i + 1) + " item");
+        for (int i = 0; i < currUser.getLocations().locations.size(); i++) {
+            nameOfLocationsList.add(currUser.getLocations().locations.get(i).getName());
         }
     }
     @Override
@@ -437,5 +443,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText( getApplicationContext(), (CharSequence) "You are signed out!", Toast.LENGTH_LONG ).show( );
 
+    }
+
+    /*
+        Adapter for dynamically constructing the listview
+     */
+    public class MyListAdapter extends ArrayAdapter<String> {
+
+        private int layout;
+        private List<String> myObjects;
+
+        public MyListAdapter(Context context, int resource, List<String> objects) {
+            super(context, resource, objects);
+            myObjects = objects;
+            layout = resource;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder mainViewHolder = null;
+            ViewHolder viewHolder = new ViewHolder();
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                convertView = inflater.inflate(layout, parent, false);
+                viewHolder.title = (TextView) convertView.findViewById(R.id.list_item_text);
+                viewHolder.button = (Button) convertView.findViewById(R.id.list_item_botton);
+                convertView.setTag(viewHolder);
+            }
+
+            mainViewHolder = (ViewHolder) convertView.getTag();
+            //Removing the location
+            mainViewHolder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String locName = nameOfLocationsList.get(position);
+                    currUser.getLocations().remove(locName);
+                    //TODO: Need to update the server
+
+                    //Removing from the local
+                    nameOfLocationsList.remove(position);
+                    mAdapter.notifyDataSetChanged();
+
+                    Toast.makeText(getContext(), "Button was clicked for list item " + (position + 1), Toast.LENGTH_SHORT).show();
+                }
+            });
+            mainViewHolder.title.setText(getItem(position));
+
+            return convertView;
+        }
+
+        protected class ViewHolder {
+
+            TextView title;
+            Button button;
+        }
     }
 }
