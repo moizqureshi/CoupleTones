@@ -86,10 +86,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private BottomBar mBottomBar;
 
+
     private User currUser;
     private GoogleApiClient mGoogleApiClient;
 
-    private int position = 0;
+
+
 
 
     //Create the dummy list for testing, need to change later
@@ -271,21 +273,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     A loop go through the list of Fav. Loc. to see if closed to and if visiting
                     "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
                  */
-//                for(int i = 0; i < usersFavLocsList.size(); i++) {
+//                boolean userLeftBefore = true;
+//                for(int i = 0; i < dummylist.size(); i++) {
+//
+//
 //                    //Checking if user is visiting.
-//                    // "< 5" means if the distance between user and the Fav. Loc. is less than 5 meters
+//                    // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
 //                    if (distanceBetween(new LatLng(location.getLatitude(),
-//                            location.getLongitude()), new Latlng(usersFavLocsList.get(i).getLatitude(),
-//                            usersFavLocsList.get(i).location.getLongitude())) < 5) {
-//                        //TODO: Need function call to push notification to partner that user is visiting Fav. Loc
+//                            location.getLongitude()), new LatLng(dummylist.get(i).getLatitude(),
+//                            dummylist.get(i).location.getLongitude())) <= 161) {
+//                        if(userLeftBefore) {
+//                            //TODO: Send the notification
+//                            userLeftBefore = false;
+//                        }
 //                    }
-//                    //Checking if user is closed to
-//                    //"< 805" means if the distance between user and the Fav.Loc is less than 805 meters which is 0.5 mile
-//                    if (distanceBetween(new LatLng(location.getLatitude(),
-//                            location.getLongitude()), new Latlng(usersFavLocsList.get(i).getLatitude(),
-//                            usersFavLocsList.get(i).location.getLongitude())) < 805) {
-//                        //TODO: Need function call to prompt user that a Fav. Loc. is closed
-//                    }
+//                    else {
+//                      userLeftBefore = true;
+//                  }
 //                }
             }
 
