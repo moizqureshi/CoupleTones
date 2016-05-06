@@ -1,12 +1,14 @@
-package com.example.moizqureshi.coupletones;
+package Locations_test;
 
 import java.util.ArrayList;
+
+import android.app.Activity;
 import android.location.Location;
 /**
  * Created by Alina on 5/3/2016.
  */
-public class Locations_Test {
-    ArrayList<FavLocation_Test> locations;
+public class Locations_Test extends Activity {
+    public ArrayList<FavLocation_Test> locations;
 
     public Locations_Test(int size ) {
         locations = new ArrayList<>(size);

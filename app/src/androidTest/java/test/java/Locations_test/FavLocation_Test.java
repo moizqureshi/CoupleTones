@@ -1,18 +1,21 @@
-package com.example.moizqureshi.coupletones;
+package Locations_test;
 import android.location.Location;
+
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Alina on 5/3/2016.
  */
 public class FavLocation_Test {
-    String name;
-    Location location;
+    public String name;
+    public LatLng location;
 
-    FavLocation_Test( String newName, Location newLocation ) {
+    public FavLocation_Test( String newName, LatLng newLocation ) {
         name = newName;
         location = newLocation;
     }
 
-    public Location getLocation( ) {
+    public LatLng getLocation( ) {
         return location;
     }
 
@@ -20,7 +23,7 @@ public class FavLocation_Test {
         return name;
     }
 
-    public void setLocation( Location newLocation ) {
+    public void setLocation( LatLng newLocation ) {
         location = newLocation;
     }
 
@@ -33,10 +36,10 @@ public class FavLocation_Test {
     }
 
     private String longtitude( ) {
-        return " - " + location.getLongitude();
+        return " - " + location.longitude;
     }
 
     private String latitude( ){
-        return " - " + getLocation().getLatitude();
+        return " - " + location.latitude;
     }
 }
