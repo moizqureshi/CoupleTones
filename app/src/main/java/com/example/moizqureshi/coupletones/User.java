@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class User {
+<<<<<<< HEAD
     private String email;
     private String partnerEmail;
     private Locations locations;
@@ -18,6 +19,13 @@ public class User {
         partnerEmail = new String("--");
         locations = new Locations( );
     }
+=======
+    GoogleSignInAccount gAccount;
+    String username;
+    Locations locations;
+    //Temporary used, needed to delete later
+    String partnerAccount;
+>>>>>>> addlocation
 
     public User( GoogleSignInAccount newAccount ) {
         email = newAccount.getEmail();
@@ -37,8 +45,18 @@ public class User {
         return locations;
     }
 
+<<<<<<< HEAD
     public void setPartnerEmail( String newPartnerEmail ) {
         partnerEmail = newPartnerEmail;
+=======
+    //Temporary used, needed to delete later
+    public String getPartnerAccount() { return partnerAccount;}
+    //Temporary used, needed to delete later
+    public void setPartnerAccount(String account) { partnerAccount = account;}
+
+    public void setUsername( String newUsername ) {
+        username = newUsername;
+>>>>>>> addlocation
     }
 
     public boolean removePartner( ) {
