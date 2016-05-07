@@ -143,6 +143,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run() {
 //                manager.setUp();
                 currUser = manager.updateUser();
+                fillListFromUser();
+                mAdapter.notifyDataSetChanged();
                 dialog.hide();
 
                 if(currUser.hasPartner()){
@@ -157,6 +159,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, 3000);
 //        manager.setUp();
+
+//        //Making a window to make use wait until we initialize data
+//        final ProgressDialog dialog=new ProgressDialog(this);
+//        dialog.setMessage("Initializing data");
+//        dialog.setCancelable(false);
+//        dialog.setInverseBackgroundForced(false);
+//        dialog.show();
+//
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                currUser = manager.updateUser();
+//                fillListFromUser();
+//                mAdapter.notifyDataSetChanged();
+//                dialog.hide();
+//            }
+//        }, 3000);
 
         /*
             Setting up the map fragment
@@ -327,7 +347,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //Checking if user is visiting.
                     // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
                     if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                            currUser.getLocations().locations.get(i).getLocation()) <= 161) {
+                            currUser.getLocations().get(i).getLocation()) <= 161) { //deleted .locations.
                         for(int j = 0; j < locNames.size(); j++) {
                             if (locNames.get(j).compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
                                 //TODO: Send the notification
@@ -426,13 +446,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /*
         Helper function to compute the distance between two LatLngs, in Meters.
      */
-    protected static double distanceBetween(LatLng from, LatLng to) {
-        double earthRadius = 6371009;
-        double dLat = toRadians(from.latitude) - toRadians(to.latitude);
-        double dLng = toRadians(from.longitude) - toRadians(to.longitude);
-        return ((sin((dLat) * 0.5)) * (sin((dLat) * 0.5))
-                + (sin((dLng) * 0.5)) * (sin((dLng) * 0.5))
-                * cos(from.latitude) * cos(to.latitude)) * earthRadius;
+    protected float distanceBetween(LatLng from, LatLng to) {
+//        double earthRadius = 6371009;
+//        double dLat = toRadians(from.latitude) - toRadians(to.latitude);
+//        double dLng = toRadians(from.longitude) - toRadians(to.longitude);
+//        return ((sin((dLat) * 0.5)) * (sin((dLat) * 0.5))
+//                + (sin((dLng) * 0.5)) * (sin((dLng) * 0.5))
+//                * cos(from.latitude) * cos(to.latitude)) * earthRadius;
+        float[] res = new float[2];
+        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, res);
+
+        return res[0];
     }
     /*
         Dialog for Adding a Favorite Location
@@ -456,23 +480,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     boolean duplicateNameOrLocation = false;
                     String locName = input.getText().toString();
 
-                    for (int i = 0; i < currUser.getLocations().locations.size(); i++) {
+                    for (int i = 0; i < currUser.getLocations().size(); i++) {
                     /*
                         No duplicate name
                         And not allowing adding location that close to an existing location by 0.2 mile which is 362 meters
                      */
 
                         if ((locName.compareTo(currUser.getLocations().get(i).getName()) == 0)
-                                || (distanceBetween(latLng, currUser.getLocations().get(i).getLocation()) < 362))
+                                || (distanceBetween(latLng, currUser.getLocations().get(i).getLocation()) < 362)) {
+
                             duplicateNameOrLocation = true;
+                        }
                     }
+                    //duplicateNAmeOrLocation = currUser.getLocations().isValid( locName, latLng );
                     if (!duplicateNameOrLocation) {
                         //Adding the locations here
                         Toast.makeText(getApplicationContext(), "Location Added", Toast.LENGTH_SHORT).show();
 
                         currUser.getLocations().add(new FavLocation(locName, latLng));
-                        //TODO: Need to save the info on server
-
+                        try {
+                            manager.updateLocations( currUser, currUser.getLocations().getList() );
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         //Updating local list
                         nameOfLocationsList.add(locName);
                         mAdapter.notifyDataSetChanged();
@@ -513,8 +543,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void fillListFromUser() {
         if (currUser.getLocations().size() != 0){
-            for (int i = 0; i < currUser.getLocations().locations.size(); i++) {
-                nameOfLocationsList.add(currUser.getLocations().locations.get(i).getName());
+            for (int i = 0; i < currUser.getLocations().size(); i++) {
+                nameOfLocationsList.add(currUser.getLocations().get(i).getName());
             }
         }
 
@@ -600,7 +630,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mDeletePartner.setVisibility(View.VISIBLE);
 
                                 Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
-                                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + manager.getPartnerId(), Toast.LENGTH_LONG ).show( );
+                                //Toast.makeText( getApplicationContext(), (CharSequence) "parter id: " + manager.getPartnerId(), Toast.LENGTH_LONG ).show( );
 
                             } else {
                                 Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
@@ -758,8 +788,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onClick(View v) {
                     String locName = nameOfLocationsList.get(position);
                     currUser.getLocations().remove(locName);
-                    //TODO: Need to update the server
-
+                    try {
+                        manager.updateLocations( currUser, currUser.getLocations().getList() );
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     //Removing from the local
                     nameOfLocationsList.remove(position);
                     mAdapter.notifyDataSetChanged();
