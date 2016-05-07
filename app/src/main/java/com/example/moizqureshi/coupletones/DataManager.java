@@ -17,6 +17,7 @@ import com.parse.FindCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,8 @@ public class DataManager {
                             obj.saveInBackground();
                         } else {
                             //Get information
-//                            user.setPartnerEmail( object.getString("partnerEmail") );
+                            object.put("signal_id", signal_id);
+                            object.saveInBackground();
                             object.fetchInBackground(new GetCallback<ParseObject>() {
                                 public void done(ParseObject object, ParseException e) {
                                     if (e == null) {
@@ -149,4 +151,32 @@ public class DataManager {
     public User updateUser( ) {
         return user;
     }
+
+    public void sendMessage(String locationName) {
+        Log.d("MSG", "PartnerId is " + getPartnerId());
+
+        JSONObject pushJSON = new JSONObject();
+        String msg;
+        msg = "Your partner is at " + locationName;
+
+        try {
+            pushJSON.put("contents", "{'en':'" + msg + "'}");
+            pushJSON.put("include_player_ids", "['" + partnerId + "']");
+            pushJSON.put("android_sound", "space_push");
+            pushJSON.put("large_icon", "ic_launcher.png");
+
+            OneSignal.postNotification(pushJSON, null);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            OneSignal.postNotification(new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "']}"), null);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+
 }
