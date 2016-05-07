@@ -3,6 +3,8 @@ package com.example.moizqureshi.coupletones;
 import java.util.ArrayList;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -39,15 +41,6 @@ public class Locations {
         return true;
     }
 
-    public boolean remove( Location location ) {
-        int position = searchIdx( location );
-        if( position == -1)
-            return false;
-
-        locations.remove( position );
-        return true;
-    }
-
     public boolean remove( String name ) {
         int position = searchIdx( name );
         if( position == -1 )
@@ -57,31 +50,14 @@ public class Locations {
         return true;
     }
 
-    public int searchIdx( Location location ) {
-        for(int i = 0; i < locations.size(); i++) {
-            if( locations.get( i ).getLocation().equals( location ) ) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
 
     public int searchIdx( String name ) {
         for(int i = 0; i < locations.size( ); i++ ) {
-            if( locations.get( i ).getName( ).equals( name ) )
+            if( locations.get( i ).getName( ).toLowerCase().equals( name.toLowerCase() ) )
                 return i;
         }
 
         return -1;
-    }
-
-    public FavLocation searchLoc( Location location ) {
-        int position = searchIdx( location );
-        if( position == -1 )
-            return null;
-
-        return locations.get( position );
     }
 
     public FavLocation searchLoc( String name ) {
