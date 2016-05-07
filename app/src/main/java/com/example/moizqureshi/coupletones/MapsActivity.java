@@ -90,13 +90,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomBar mBottomBar;
 
     private User currUser;
-    private String temp;
     private GoogleApiClient mGoogleApiClient;
 
     DataManager manager;
 
     //ArrayList for storing the locations during runtime
     private ArrayList<String> nameOfLocationsList = new ArrayList<>();
+
+    private String temp;
+    private Boolean exists = false;
 
 
     /**
@@ -130,6 +132,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mAddPartner = (TextView) findViewById(R.id.addPartner);
         mDeletePartner = (TextView) findViewById(R.id.deletePartner);
         mSignOut = (TextView) findViewById(R.id.signOut);
+        mAddPartner.setVisibility(View.GONE);
+        mDeletePartner.setVisibility(View.GONE);
+
         /*
             Add partner listener
          */
@@ -158,6 +163,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        if (currUser.hasPartner()) {
+            mAddPartner.setVisibility(View.GONE);
+            mDeletePartner.setVisibility(View.VISIBLE);
+        } else{
+            mAddPartner.setVisibility(View.VISIBLE);
+            mDeletePartner.setVisibility(View.GONE);
+        }
+
         /*
             Setting up search text field and button
          */
@@ -183,15 +196,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (menuItemId == R.id.bottomBarItemOne) {
                     // The user selected item number one.
                     mSettingTitle.setVisibility(View.VISIBLE);
-                    //TODO: Need to somehow check if there is a partner for currUser
-                    if(currUser.hasPartner()) {
-                        mAddPartner.setVisibility(View.VISIBLE);
-                        mDeletePartner.setVisibility(View.GONE);
-                    }
-                    else {
-                        mAddPartner.setVisibility(View.GONE);
-                        mDeletePartner.setVisibility(View.VISIBLE);
-                    }
                     mSignOut.setVisibility(View.VISIBLE);
                     mSearchView.setVisibility(View.GONE);
                     mSearchButton.setVisibility(View.GONE);
@@ -236,33 +240,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-//        mMenuButton1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showAddPartnerialog();
-//            }
-//        });
-//
-//        mMenuButton2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!currUser.hasPartner()) {
-//                    Toast.makeText( getApplicationContext(), (CharSequence) "Not currently paired with anyone!", Toast.LENGTH_LONG ).show( );
-//                }
-//                Toast.makeText( getApplicationContext(), (CharSequence) "Removed partner:", Toast.LENGTH_LONG ).show( );
-//                currUser.removePartner();
-//                manager.updatePartnerEmail(currUser);
-//            }
-//        });
-//
-//        mMenuButton3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                signOut();
-//            }
-//        });
-
-
         //Making a window to make use wait until we initialize data
         final ProgressDialog dialog=new ProgressDialog(this);
         dialog.setMessage("Initializing data");
@@ -279,8 +256,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, 3000);
     }
-
-
 
     /**
      * Create the map and relevant iterms
@@ -606,32 +581,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Dialog for Adding the partner
      */
     protected void showAddPartnerDialog() {
-        //Temporary use for checking if the partner is found
-        final boolean partnerIsFound = false;
         AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
 
-        alert.setTitle("Add Partner");
-        alert.setMessage("Please enter your partner's gmail:");
+        alert.setTitle("Pair a partner");
+        alert.setMessage("Please enter your partner's email:");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(MapsActivity.this);
         alert.setView(input);
+        final String partnerEmail = input.getText().toString();
 
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-            String partnerGmail = input.getText().toString();
-            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                if(!input.getText().toString().equals("")) {
-                    if (manager.findPartnerEmail(input.getText().toString()))
-                        currUser.setPartnerEmail(input.getText().toString());
-                    else {
-                        Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
+                exists = manager.findPartnerEmail(partnerEmail);
+                findPartnerProgressDialog();
+                if(exists) {
+                    currUser.setHasPartner(true);
                 } else {
-                    currUser.setPartnerEmail("--");
+                    currUser.setHasPartner(false);
                 }
+
 
                 manager.updatePartnerEmail(currUser);
 
@@ -649,6 +618,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         alert.show();
     }
+
+    void findPartnerProgressDialog() {
+        final ProgressDialog dialogP=new ProgressDialog(this);
+        dialogP.setMessage("Searching");
+        dialogP.setCancelable(false);
+        dialogP.setInverseBackgroundForced(false);
+        dialogP.show();
+
+        final Handler handlerP = new Handler();
+        handlerP.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                dialogP.hide();
+            }
+        }, 500);
+    }
+
+
+    void setPartnerProgressDialog() {
+        final ProgressDialog dialogP=new ProgressDialog(this);
+        dialogP.setMessage("Initializing data");
+        dialogP.setCancelable(false);
+        dialogP.setInverseBackgroundForced(false);
+        dialogP.show();
+
+        final Handler handlerP = new Handler();
+        handlerP.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currUser.setPartnerId(manager.getPartnerId( ));
+                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerId(), Toast.LENGTH_LONG ).show( );
+                dialogP.hide();
+            }
+        }, 500);
+    }
+
+
+
     /*
         Dialog for deleting the partner
      */
@@ -666,7 +674,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (!currUser.hasPartner()) {
                     Toast.makeText( getApplicationContext(), (CharSequence) "Not currently paired with anyone!", Toast.LENGTH_LONG ).show( );
                 }
-                Toast.makeText( getApplicationContext(), (CharSequence) "Removed partner:", Toast.LENGTH_LONG ).show( );
+                Toast.makeText( getApplicationContext(), (CharSequence) "Removed partner", Toast.LENGTH_LONG ).show( );
                 currUser.removePartner();
                 manager.updatePartnerEmail(currUser);
 
@@ -758,24 +766,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    void setPartnerProgressDialog() {
-        final ProgressDialog dialogP=new ProgressDialog(this);
-        dialogP.setMessage("Initializing data");
-        dialogP.setCancelable(false);
-        dialogP.setInverseBackgroundForced(false);
-        dialogP.show();
 
-        final Handler handlerP = new Handler();
-        handlerP.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                currUser.setPartnerId(manager.getPartnerId( ));
-                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerId(), Toast.LENGTH_LONG ).show( );
 
-                dialogP.hide();
-            }
-        }, 1500);
-    }
 }
 /**
  * if you need partner Id. First call:
