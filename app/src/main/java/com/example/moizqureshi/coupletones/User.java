@@ -4,12 +4,13 @@ package com.example.moizqureshi.coupletones;
 /**
  * Created by moizqureshi on 5/3/16.
  */
+import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-public class User {
+public class User extends Activity {
     private String email;
     private String partnerEmail;
     private String partnerId;
@@ -44,6 +45,11 @@ public class User {
 
     public Locations getLocations( ) {
         return locations;
+    }
+
+    public void setEmail( String newEmail )
+    {
+        email = newEmail;
     }
 
     public void setPartnerEmail( String newPartnerEmail ) {

@@ -75,10 +75,11 @@ import static java.lang.Math.toRadians;
 /**
  * Main page of the map
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Marker onSearchLocationMarker;
+
     private ArrayAdapter mAdapter;
     private boolean update = false;
 

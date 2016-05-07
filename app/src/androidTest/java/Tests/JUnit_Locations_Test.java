@@ -3,6 +3,7 @@ package Tests;
 import com.example.moizqureshi.coupletones.FavLocation;
 import com.example.moizqureshi.coupletones.Locations;
 
+
 import org.junit.Before;
 import org.junit.Test;
 
