@@ -55,6 +55,7 @@ public class DataManager {
                             object.fetchInBackground(new GetCallback<ParseObject>() {
                                 public void done(ParseObject object, ParseException e) {
                                     if (e == null) {
+                                        partnerId = object.getString("partnerId");
                                         partnerEmail = object.getString("partnerEmail");
                                         user.setPartnerEmail( partnerEmail );
 //                                        Log.d("test", "user has partner "+getPartnerEmail());
@@ -135,6 +136,7 @@ public class DataManager {
 
                 } else {
                     partnerId = object.getString("signal_id");
+                    Log.d("Test", "Got partnerId it is "+getPartnerId());
                 }
             }
         });
@@ -159,13 +161,26 @@ public class DataManager {
         String msg;
         msg = "Your partner is at " + locationName;
 
-        try {
-            pushJSON.put("contents", "{'en':'" + msg + "'}");
-            pushJSON.put("include_player_ids", "['" + partnerId + "']");
-            pushJSON.put("android_sound", "space_push");
-            pushJSON.put("large_icon", "ic_launcher.png");
+//        try {
+//            pushJSON.put("contents", "{'en':'" + msg + "'}");
+//            pushJSON.put("include_player_ids", "['" + partnerId + "']");
+//            pushJSON.put("android_sound", "space_push");
+//            pushJSON.put("large_icon", "ic_launcher.png");
+//
+//            pushJSON.
+//
+//            Log.d("Test", "pushJson is:" + '\n' + pushJSON.toString());
+//
+//            OneSignal.postNotification(pushJSON, null);
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
-            OneSignal.postNotification(pushJSON, null);
+        try{
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher.jpg'}");
+            Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
+            OneSignal.postNotification(pushJson, null);
 
         } catch (JSONException e) {
             e.printStackTrace();
