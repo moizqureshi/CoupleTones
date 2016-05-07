@@ -28,6 +28,7 @@ public class User {
         email = newAccount.getEmail();
         partnerEmail = new String("--");
         locations = new Locations( );
+
     }
 
     public String getEmail( ) {
@@ -73,11 +74,10 @@ public class User {
     }
 
     public boolean hasPartner( ) {
-        return hasPartner;
+        return !(partnerEmail.equals("--"));
     }
 
-    public void setHasPartner(boolean partnerExist){
-        hasPartner = partnerExist;
+    public void setHasPartner(boolean partnerExists) {
+        hasPartner = partnerExists;
     }
-
 }
