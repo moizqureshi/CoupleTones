@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class DataManager {
     User user;
     String partnerId;
-    boolean partnerExists;
+    String partnerEmail;
 
     DataManager(User user) {
         this.user = user;
@@ -49,18 +49,31 @@ public class DataManager {
                             obj.saveInBackground();
                         } else {
                             //Get information
-                            user.setPartnerEmail( object.getString("partnerEmail") );
-                            try {
-                                user.getLocations().update( object.getJSONArray("locationsList") );
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
+//                            user.setPartnerEmail( object.getString("partnerEmail") );
+                            object.fetchInBackground(new GetCallback<ParseObject>() {
+                                public void done(ParseObject object, ParseException e) {
+                                    if (e == null) {
+                                        partnerEmail = object.getString("partnerEmail");
+                                        user.setPartnerEmail( partnerEmail );
+//                                        Log.d("test", "user has partner "+getPartnerEmail());
+
+                                        try {
+                                            user.getLocations().update( object.getJSONArray("locationsList") );
+                                        } catch (JSONException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    } else {
+                                        // Failure!
+                                    }
+                                }
+                            });
                         }
                     }
                 });
 
             }
         });
+        user.setHasPartner(user.hasPartner());
     }
 
     public void updatePartnerEmail( User newUser ) {
@@ -78,19 +91,18 @@ public class DataManager {
         });
     }
 
-    public boolean findPartnerEmail(String partnerEmail) {
+    public void findPartnerEmail(String email) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
-        query.whereEqualTo("email", partnerEmail);
+        query.whereEqualTo("email", email);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
                 if (object == null) { //There isn't a user
-                    partnerExists = false;
+                    partnerEmail = "--";
                 } else {
-                    partnerExists = true;
+                    partnerEmail = object.getString("email");
                 }
             }
         });
-        return partnerExists;
     }
 
     public void updateLocations(User newUser, final JSONArray newLocations ) {
@@ -123,6 +135,10 @@ public class DataManager {
                 }
             }
         });
+    }
+
+    public String getPartnerEmail() {
+        return partnerEmail;
     }
 
     public String getPartnerId( ) {
