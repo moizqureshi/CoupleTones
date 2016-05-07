@@ -49,12 +49,24 @@ public class DataManager {
                             obj.saveInBackground();
                         } else {
                             //Get information
-                            user.setPartnerEmail( object.getString("partnerEmail") );
-                            try {
-                                user.getLocations().update( object.getJSONArray("locationsList") );
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
+                            //user.setPartnerEmail( object.getString("partnerEmail") );
+
+                            object.fetchInBackground(new GetCallback<ParseObject>() {
+                                public void done(ParseObject object, ParseException e) {
+                                    if (e == null) {
+
+                                        try {
+                                            user.getLocations().update( object.getJSONArray("locationsList") );
+                                        } catch (JSONException e1) {
+                                            e1.printStackTrace();
+                                        }
+
+                                    } else {
+                                        // Failure!
+                                    }
+                                }
+                            });
+
                         }
                     }
                 });
