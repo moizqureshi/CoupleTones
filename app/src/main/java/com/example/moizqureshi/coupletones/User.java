@@ -14,12 +14,14 @@ public class User {
     private String partnerEmail;
     private String partnerId;
     private Locations locations;
+    private boolean hasPartner;
 
     public User( ) {
         email = null;
         partnerEmail = new String("--");
         partnerId = null;
         locations = new Locations( );
+        hasPartner = false;
     }
 
     public User( GoogleSignInAccount newAccount ) {
@@ -71,7 +73,11 @@ public class User {
     }
 
     public boolean hasPartner( ) {
-        return !(partnerEmail.equals("--"));
+        return hasPartner;
+    }
+
+    public void setHasPartner(boolean partnerExist){
+        hasPartner = partnerExist;
     }
 
 }

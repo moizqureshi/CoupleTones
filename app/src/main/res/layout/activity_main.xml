@@ -25,6 +25,7 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:id="@+id/addPartner"
+                    android:visibility="invisible"
                     android:clickable="true" />
 
                 <TextView
@@ -35,6 +36,7 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:id="@+id/deletePartner"
+                    android:visibility="invisible"
                     android:clickable="true"/>
 
                 <TextView
