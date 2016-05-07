@@ -329,7 +329,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
                  */
 
-                manager.sendMessage(currUser.getLocations().get(0).getName());
+//                manager.sendMessage(currUser.getLocations().get(0).getName());
 
                 for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
 
@@ -337,9 +337,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
                     if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
                             currUser.getLocations().get(i).getLocation()) <= 161) { //deleted .locations.
+                        Log.d("Test", "At a fav location");
+                        manager.sendMessage(currUser.getLocations().get(i).getName());
+
                         for(int j = 0; j < locNames.size(); j++) {
                             if (locNames.get(j).compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
                                 //TODO: Send the notification
+//                                manager.sendMessage(currUser.getLocations().get(i).getName());
+
                                 locNames.add(currUser.getLocations().locations.get(i).getName());
                             }
                         }
