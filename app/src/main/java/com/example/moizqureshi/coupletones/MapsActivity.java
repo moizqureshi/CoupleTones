@@ -10,34 +10,25 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.MotionEvent;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.app.ProgressDialog;
 
 import com.google.android.gms.appindexing.AppIndex;
@@ -55,10 +46,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
@@ -66,10 +53,6 @@ import org.json.JSONException;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.toRadians;
 
 
 /**
@@ -102,7 +85,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Boolean exists = false;
 
 
-    /**
+    MediaPlayer mpSucc;
+    MediaPlayer mpFail;
+
+        /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
@@ -158,25 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }, 3000);
-//        manager.setUp();
 
-//        //Making a window to make use wait until we initialize data
-//        final ProgressDialog dialog=new ProgressDialog(this);
-//        dialog.setMessage("Initializing data");
-//        dialog.setCancelable(false);
-//        dialog.setInverseBackgroundForced(false);
-//        dialog.show();
-//
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                currUser = manager.updateUser();
-//                fillListFromUser();
-//                mAdapter.notifyDataSetChanged();
-//                dialog.hide();
-//            }
-//        }, 3000);
 
         /*
             Setting up the map fragment
@@ -300,6 +268,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
+        mpSucc = MediaPlayer.create(this, R.raw.pair_succ);
+        mpSucc.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+
+        mpFail = MediaPlayer.create(this, R.raw.pair_fail);
+        mpFail.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+
+
     }
 
     /**
@@ -341,6 +328,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     A loop go through the list of Fav. Loc. to see if closed to and if visiting
                     "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
                  */
+
+                manager.sendMessage(currUser.getLocations().get(0).getName());
 
                 for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
 
@@ -594,14 +583,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     protected void showAddPartnerDialog( ) {
         AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
-
-        alert.setTitle("Pair a partner");
+        alert.setTitle("Pair with a partner");
         alert.setMessage("Please enter your partner's email:");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(MapsActivity.this);
         alert.setView(input);
-        //final String partnerEmail;
+
+
+
+
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String partnerEmail = input.getText().toString();
@@ -632,24 +623,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
                                 //Toast.makeText( getApplicationContext(), (CharSequence) "parter id: " + manager.getPartnerId(), Toast.LENGTH_LONG ).show( );
 
+                                mpSucc.start();
+
                             } else {
                                 Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
+                                mpFail.start();
                             }
-
                             dialogP.hide();
                         }
                     }, 1000);
-                    //dialogP.hide();
-                    //wait here
+
                 } else {
                     Toast.makeText( getApplicationContext(), (CharSequence) "Partner email was blank!", Toast.LENGTH_LONG ).show( );
-                    //currUser.setPartnerEmail(manager.getPartnerEmail());
                 }
-
-                //setPartnerProgressDialog();
-//                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
-
-            }
+              }
         });
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -660,26 +647,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         alert.show();
     }
-
-//    void findPartnerProgressDialog() {
-//        final ProgressDialog dialogP=new ProgressDialog(this);
-//        dialogP.setMessage("Searching");
-//        dialogP.setCancelable(false);
-//        dialogP.setInverseBackgroundForced(false);
-//        dialogP.show();
-//
-//        final Handler handlerP = new Handler();
-//        handlerP.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                currUser.setPartnerId(manager.getPartnerId( ));
-//                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerId(), Toast.LENGTH_LONG ).show( );
-//                dialogP.hide();
-//            }
-//        }, 1500);
-//    }
-
-
 
     void setPartnerProgressDialog() {
         final ProgressDialog dialogP=new ProgressDialog(this);
@@ -698,7 +665,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, 1500);
     }
-
 
 
     /*
@@ -811,9 +777,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Button button;
         }
     }
-
-
-
 
 }
 /**
