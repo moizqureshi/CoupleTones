@@ -114,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 manager = new DataManager(currUser);
 
                 manager.setUp();
-            }}, 1000);
+            }}, 500);
 
         //Making a window to make use wait until we initialize data
         final ProgressDialog dialog=new ProgressDialog(this);
@@ -338,7 +338,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
                             currUser.getLocations().get(i).getLocation()) <= 161) { //deleted .locations.
                         Log.d("Test", "At a fav location");
-                        manager.sendMessage(currUser.getLocations().get(i).getName());
+                        manager.fetchPartnerId();
+                        final String locName = currUser.getLocations().get(i).getName();
+                        final Integer dubI = i;
+                        final Handler handlerP = new Handler();
+
+                        handlerP.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), (CharSequence) "i = " + dubI.toString() + "yo partner id isssss: " + manager.getPartnerId(), Toast.LENGTH_LONG).show();
+
+                                manager.sendMessage( locName );
+                            }}, 2000);
 
                         for(int j = 0; j < locNames.size(); j++) {
                             if (locNames.get(j).compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
@@ -618,7 +629,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void run() {
                             if(!manager.getPartnerEmail().equals("--")) {
                                 currUser.setPartnerEmail(partnerEmail);
-                                manager.fetchPartnerId();
+                                //manager.fetchPartnerId();
                                 //currUser.setPartnerId(manager.getPartnerId( ));
                                 manager.updatePartnerEmail(currUser);
 
@@ -653,7 +664,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         alert.show();
     }
 
-    void setPartnerProgressDialog() {
+    /*void setPartnerProgressDialog() {
         final ProgressDialog dialogP=new ProgressDialog(this);
         dialogP.setMessage("Initializing data");
         dialogP.setCancelable(false);
@@ -669,7 +680,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dialogP.hide();
             }
         }, 1500);
-    }
+    }*/
 
 
     /*
@@ -710,7 +721,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Checking if the input is alphanumeric
      */
     protected boolean isAlphaNumeric(String s){
-        String pattern= "^[a-zA-Z0-9]+$";
+        String pattern= "^[a-zA-Z0-9 ]+$";
         return s.matches(pattern);
     }
 
