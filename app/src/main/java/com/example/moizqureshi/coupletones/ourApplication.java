@@ -1,11 +1,15 @@
 package com.example.moizqureshi.coupletones;
 
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
 import com.onesignal.OneSignal;
 import com.parse.Parse;
 
@@ -16,8 +20,15 @@ import org.json.JSONObject;
  * Created by Team 3 on 5/5/16.
  */
 public class ourApplication extends Application {
+
+    OptionalPendingResult<GoogleSignInResult> opr;
+    GoogleApiClient mGoogleApiClient;
+    GoogleSignInAccount acct;
+
     public void onCreate(){
         super.onCreate();
+
+
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("CoupleTones")

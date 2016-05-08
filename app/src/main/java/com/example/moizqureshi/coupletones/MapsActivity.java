@@ -62,6 +62,8 @@ import java.util.ArrayList;
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    protected ourApplication app;
+
     private GoogleMap mMap;
     private Marker onSearchLocationMarker;
     private ArrayAdapter mAdapter;
@@ -75,8 +77,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomBar mBottomBar;
 
     private User currUser;
-    private GoogleApiClient mGoogleApiClient;
-    private OptionalPendingResult<GoogleSignInResult> opr;
 
     DataManager manager;
 
@@ -103,6 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        app = (ourApplication)getApplication();
+
         makeUser( );
         final Handler signinHandler = new Handler();
         currUser = new User( );
@@ -111,23 +113,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         signinHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (opr.isDone())
-                {
-                    currUser = new User(opr.get().getSignInAccount());
-                    manager = new DataManager(currUser);
 
-                    manager.setUp();
-                } else {
-                    opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                        @Override
-                        public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-                            currUser = new User(opr.get().getSignInAccount());
-                            manager = new DataManager(currUser);
-
-                            manager.setUp();
-                        }
-                    });
-                }
+                currUser = new User(app.acct);
+                manager = new DataManager(currUser);
+                manager.setUp();
             }}, 500);
 
         //Making a window to make use wait until we initialize data
@@ -150,8 +139,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(currUser.hasPartner()){
                     mAddPartner.setVisibility(View.GONE);
                     mDeletePartner.setVisibility(View.VISIBLE);
-                   // Log.d("test", "user has partner "+currUser.getPartnerEmail());
-
                 } else {
                     mAddPartner.setVisibility(View.VISIBLE);
                     mDeletePartner.setVisibility(View.GONE);
@@ -282,6 +269,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
         mBottomBar.setDefaultTabPosition(1);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -595,12 +583,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .requestEmail()
                 .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        app.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, null /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        app.opr = Auth.GoogleSignInApi.silentSignIn(app.mGoogleApiClient);
 
     }
 
@@ -608,9 +596,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Function for signing out
      */
     private void signOut( ) {
-        //Toast.makeText( getApplicationContext(), (CharSequence) "Entering func", Toast.LENGTH_LONG ).show( );
 
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.signOut(app.mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
@@ -620,11 +607,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // [END_EXCLUDE]
                     }
                 });
-
-
         Toast.makeText( getApplicationContext(), (CharSequence) "You are signed out!", Toast.LENGTH_LONG ).show( );
-
     }
+
     /*
         Dialog for Adding the partner
      */
@@ -668,7 +653,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mDeletePartner.setVisibility(View.VISIBLE);
 
                                 Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
-                                //Toast.makeText( getApplicationContext(), (CharSequence) "parter id: " + manager.getPartnerId(), Toast.LENGTH_LONG ).show( );
 
                                 mpSucc.start();
 
