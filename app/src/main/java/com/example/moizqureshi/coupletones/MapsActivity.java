@@ -274,7 +274,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mpSucc.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mp.release();
+                onPause();
+                onStop();
             }
         });
 
@@ -282,8 +283,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mpFail.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
+                onPause();
+                onStop();            }
         });
 
 
@@ -640,11 +641,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
                                 //Toast.makeText( getApplicationContext(), (CharSequence) "parter id: " + manager.getPartnerId(), Toast.LENGTH_LONG ).show( );
 
-                              //  mpSucc.start(); DO NOT DELETE ME
+                                mpSucc.start();
 
                             } else {
                                 Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
-                                // mpFail.start(); DO NOT DELETE ME
+                                mpFail.start();
                             }
                             dialogP.hide();
                         }
@@ -665,26 +666,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         alert.show();
     }
 
-    /*void setPartnerProgressDialog() {
-        final ProgressDialog dialogP=new ProgressDialog(this);
-        dialogP.setMessage("Initializing data");
-        dialogP.setCancelable(false);
-        dialogP.setInverseBackgroundForced(false);
-        dialogP.show();
-
-        final Handler handlerP = new Handler();
-        handlerP.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                currUser.setPartnerId(manager.getPartnerId( ));
-                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerId(), Toast.LENGTH_LONG ).show( );
-                dialogP.hide();
-            }
-        }, 1500);
-    }*/
-
-
-    /*
+   /*
         Dialog for deleting the partner
      */
     protected void showDeletePartnerDialog() {
