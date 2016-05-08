@@ -55,7 +55,7 @@ public class DataManager {
                             object.fetchInBackground(new GetCallback<ParseObject>() {
                                 public void done(ParseObject object, ParseException e) {
                                     if (e == null) {
-                                        partnerId = object.getString("partnerId");
+                                        //partnerId = object.getString("partnerId");
                                         partnerEmail = object.getString("partnerEmail");
                                         user.setPartnerEmail( partnerEmail );
 //                                        Log.d("test", "user has partner "+getPartnerEmail());
@@ -136,7 +136,7 @@ public class DataManager {
 
                 } else {
                     partnerId = object.getString("signal_id");
-                    Log.d("Test", "Got partnerId it is "+getPartnerId());
+                    Log.d("Test", "Got partnerId it is "+ partnerId);
                 }
             }
         });
@@ -155,7 +155,7 @@ public class DataManager {
     }
 
     public void sendMessage(String locationName) {
-        Log.d("MSG", "PartnerId is " + getPartnerId());
+        Log.d("MSG", "PartnerId is " + partnerId);
 
         JSONObject pushJSON = new JSONObject();
         String msg;
