@@ -338,7 +338,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
                             currUser.getLocations().get(i).getLocation()) < 161) { //deleted .locations.
                         //manager.sendMessage(currUser.getLocations().get(i).getName());
-                        if (locName == null) {
+                        if (locName.compareTo(currUser.getLocations().get(i).getName()) != 0) {
                             Log.d("Test3", "At a fav location");
                             //TODO: Send the notification
 //                                manager.sendMessage(currUser.getLocations().get(i).getName());
@@ -346,14 +346,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                     //Detect if the user has left
-                    if ((locName != null)
-                            && (currUser.getLocations().searchLoc(locName) != null)
-                                && (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                                currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
-
-                            Log.d("Test4", "has left" + locName);
-                            locName = null;
-                    }
+//                    if ((locName != null)
+//                            && (currUser.getLocations().searchLoc(locName) != null)
+//                                && (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+//                                currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
+//
+//                            Log.d("Test4", "has left" + locName);
+//                            locName = null;
+//                    }
                 }
             }
 
