@@ -14,10 +14,12 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean update = false;
 
     private ImageButton mSearchButton;
-    private TextView mSettingTitle, mAddPartner, mDeletePartner, mSignOut;
+    private TextView mSettingTitle, mAddPartner, mDeletePartner, mPartner, mSignOut;
     private EditText mSearchView;
     private ListView mListView;
 
@@ -84,9 +86,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String temp;
     private Boolean exists = false;
 
-
     MediaPlayer mpSucc;
     MediaPlayer mpFail;
+    MediaPlayer mpDel;
 
         /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -100,7 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        this.fillListFromUser();
 
         makeUser( );
         final Handler signinHandler = new Handler();
@@ -110,10 +111,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         signinHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                currUser = new User(opr.get().getSignInAccount());
-                manager = new DataManager(currUser);
+                if (opr.isDone())
+                {
+                    currUser = new User(opr.get().getSignInAccount());
+                    manager = new DataManager(currUser);
 
-                manager.setUp();
+                    manager.setUp();
+                } else {
+                    opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                        @Override
+                        public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+                            currUser = new User(opr.get().getSignInAccount());
+                            manager = new DataManager(currUser);
+
+                            manager.setUp();
+                        }
+                    });
+                }
             }}, 500);
 
         //Making a window to make use wait until we initialize data
@@ -158,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mSettingTitle = (TextView) findViewById(R.id.settings);
         mAddPartner = (TextView) findViewById(R.id.addPartner);
         mDeletePartner = (TextView) findViewById(R.id.deletePartner);
+        mPartner = (TextView) findViewById(R.id.partner);
         mSignOut = (TextView) findViewById(R.id.signOut);
 
         /*
@@ -216,6 +231,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
                     mDeletePartner.setVisibility(View.GONE);
+                    mPartner.setVisibility(View.GONE);
                     mSignOut.setVisibility(View.GONE);
                     mSearchView.setVisibility(View.VISIBLE);
                     mSearchButton.setVisibility(View.VISIBLE);
@@ -235,11 +251,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(currUser.hasPartner()){
                         mAddPartner.setVisibility(View.GONE);
                         mDeletePartner.setVisibility(View.VISIBLE);
-                        // Log.d("test", "user has partner "+currUser.getPartnerEmail());
+                        mPartner.setText("Partner: " + currUser.getPartnerEmail());
+                        mPartner.setVisibility(View.VISIBLE);
 
                     } else {
                         mAddPartner.setVisibility(View.VISIBLE);
                         mDeletePartner.setVisibility(View.GONE);
+                        mPartner.setVisibility(View.GONE);
                     }
 
                 }
@@ -248,6 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
                     mDeletePartner.setVisibility(View.GONE);
+                    mPartner.setVisibility(View.GONE);
                     mSignOut.setVisibility(View.GONE);
                     mSearchView.setVisibility(View.GONE);
                     mSearchButton.setVisibility(View.GONE);
@@ -287,6 +306,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 onStop();            }
         });
 
+        mpDel = MediaPlayer.create(this, R.raw.pair_delete);
+        mpDel.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                onPause();
+                onStop();
+            }
+        });
 
     }
 
@@ -473,11 +500,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
 
-        alert.setTitle("Adding Favorite Location");
-        alert.setMessage("Please assign a name of the location:");
+        alert.setTitle("Add a favorite location");
+        alert.setMessage("Please assign a location name:");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(MapsActivity.this);
+        input.setSingleLine();
+        input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);
 
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -520,7 +549,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else
                 {
                     showAddLocationDialog(latLng);
-                    Toast.makeText(getApplicationContext(), (CharSequence) "Input invalid", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), (CharSequence) "Invalid input", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -606,10 +635,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Set an EditText view to get user input
         final EditText input = new EditText(MapsActivity.this);
+        input.setSingleLine();
+        input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);
-
-
-
 
         alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -624,7 +652,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     dialogP.setInverseBackgroundForced(false);
                     dialogP.show();
 
-                    Log.d("here", "ran!!!!!!");
                     final Handler handlerP = new Handler();
                     handlerP.postDelayed(new Runnable() {
                         @Override
@@ -636,6 +663,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 manager.updatePartnerEmail(currUser);
 
                                 mAddPartner.setVisibility(View.GONE);
+                                mPartner.setText("Partner: " + currUser.getPartnerEmail());
+                                mPartner.setVisibility(View.VISIBLE);
                                 mDeletePartner.setVisibility(View.VISIBLE);
 
                                 Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
@@ -672,8 +701,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void showDeletePartnerDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
 
-        alert.setTitle("Confirm delete Partner");
-        alert.setMessage("Are you sure want to DELETE your partner?");
+        alert.setTitle("Confirm partner unpairing");
+        alert.setMessage("Are you sure want to unpair with your partner?");
 
 
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -687,7 +716,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currUser.removePartner();
                 manager.updatePartnerEmail(currUser);
 
+                mpDel.start();
+
                 mAddPartner.setVisibility(View.VISIBLE);
+                mPartner.setText("");
+                mPartner.setVisibility(View.GONE);
                 mDeletePartner.setVisibility(View.GONE);
             }
         });

@@ -8,12 +8,12 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="75dp"
                     android:background="#3d5bd6"
                     android:text="Settings"
-                    android:textSize="35dp"
+                    android:textSize="20dp"
                     android:textStyle="bold"
-                    android:textColorHighlight="@color/white"
+                    android:textColor="@color/white"
                     android:id="@+id/settings"
                     android:gravity="center"
                     android:fontFamily="@string/title_text"/>
@@ -21,8 +21,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:text="Add Partner"
-                    android:textSize="50dp"
+                    android:textSize="35dp"
                     android:textStyle="bold"
+                    android:textColor="#3d5bd6"
                     android:gravity="center"
                     android:id="@+id/addPartner"
                     android:clickable="true" />
@@ -31,8 +32,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:text="Delete Partner"
-                    android:textSize="50dp"
+                    android:textSize="35dp"
                     android:textStyle="bold"
+                    android:textColor="#3d5bd6"
                     android:gravity="center"
                     android:id="@+id/deletePartner"
                     android:clickable="true"/>
@@ -41,8 +43,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:text="Sign Out"
-                    android:textSize="50dp"
+                    android:textSize="35dp"
                     android:gravity="center"
+                    android:textColor="#3d5bd6"
                     android:textStyle="bold"
                     android:id="@+id/signOut" />
         </LinearLayout>
@@ -71,6 +74,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true">
                 </EditText>
+
                 <ImageButton
                     android:id="@+id/searchButton"
                     android:layout_width="42dp"
@@ -85,6 +89,14 @@
                     android:id="@+id/listView"
                     android:layout_alignParentStart="true"
                     android:gravity="bottom"/>
+
+                <TextView
+                    android:id="@+id/partner"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="220dp"
+                    android:gravity="center"
+                    android:text="Paired with:" />
 
         </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>
