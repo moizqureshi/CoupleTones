@@ -1,4 +1,5 @@
 package com.example.moizqureshi.coupletones;
+import android.app.Activity;        /* TODO ADDED */
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -6,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 /**
  * Created by Alina on 5/3/2016.
  */
-public class FavLocation {
+public class FavLocation extends Activity {
     private String name;
     private LatLng location;
 
@@ -46,14 +47,14 @@ public class FavLocation {
     }
 
     public String toString( ) {
-        return name + longtitude() + latitude();
-    }
+        return name + latitude() + longtitude();
+    } /*  */
 
-    private String longtitude( ) {
+    public String longtitude( ) {
         return " * " + location.longitude;
-    }
+    } /* TODO */
 
-    private String latitude( ) {
+    public String latitude( ) {
         return " * " + location.latitude;
-    }
+    }   /* TODO */
 }

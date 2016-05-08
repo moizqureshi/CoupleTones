@@ -3,12 +3,13 @@ package com.example.moizqureshi.coupletones;
 /**
  * Created by moizqureshi on 5/3/16.
  */
+import android.app.Activity; /* NEW / ADDED TODO */
 import android.net.Uri;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-public class User {
+public class User extends Activity {
     private String email;
     private String partnerEmail;
     private Locations locations;
