@@ -317,7 +317,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Track current location.
          */
         LocationListener locationListener = new LocationListener() {
-            ArrayList<String> locNames = new ArrayList<>();
+            String locName = null;
             @Override
             public void onLocationChanged(Location location) {
                 /*
@@ -326,35 +326,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
                 /*
                     A loop go through the list of Fav. Loc. to see if closed to and if visiting
-                    "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
                  */
-
 //                manager.sendMessage(currUser.getLocations().get(0).getName());
-
-                for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
-
+                for(int i = 0; i < currUser.getLocations().size(); i++) {
+                    Log.d("Test1", " " +
+                            distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                                    currUser.getLocations().get(i).getLocation()) + " at " + i);
+                    Log.d("Test2", " " + currUser.getLocations().get(i).getLocation());
                     //Checking if user is visiting.
                     // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
                     if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                            currUser.getLocations().get(i).getLocation()) <= 161) { //deleted .locations.
-                        Log.d("Test", "At a fav location");
-                        manager.sendMessage(currUser.getLocations().get(i).getName());
-
-                        for(int j = 0; j < locNames.size(); j++) {
-                            if (locNames.get(j).compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
-                                //TODO: Send the notification
+                            currUser.getLocations().get(i).getLocation()) < 161) { //deleted .locations.
+                        //manager.sendMessage(currUser.getLocations().get(i).getName());
+                        if (locName == null) {
+                            Log.d("Test3", "At a fav location");
+                            //TODO: Send the notification
 //                                manager.sendMessage(currUser.getLocations().get(i).getName());
-
-                                locNames.add(currUser.getLocations().locations.get(i).getName());
-                            }
+                            locName = currUser.getLocations().get(i).getName();
                         }
                     }
                     //Detect if the user has left
-                    for(int k = 0; k < locNames.size(); k++) {
-                        if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                                currUser.getLocations().searchLoc(locNames.get(k)).getLocation()) > 161) {
-                            locNames.remove(k);
-                        }
+                    if ((locName != null)
+                            && (currUser.getLocations().searchLoc(locName) != null)
+                                && (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                                currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
+
+                            Log.d("Test4", "has left" + locName);
+                            locName = null;
                     }
                 }
             }
@@ -765,7 +763,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         e.printStackTrace();
                     }
                     //Removing from the local
-                    nameOfLocationsList.remove(position);
+                    nameOfLocationsList.remove(locName);
                     mAdapter.notifyDataSetChanged();
 
                     Toast.makeText(getContext(), "Location: " + locName + " deleted", Toast.LENGTH_SHORT).show();

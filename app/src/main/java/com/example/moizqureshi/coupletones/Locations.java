@@ -53,7 +53,7 @@ public class Locations {
 
     public int searchIdx( String name ) {
         for(int i = 0; i < locations.size( ); i++ ) {
-            if( locations.get( i ).getName( ).toLowerCase().equals( name.toLowerCase() ) )
+            if( locations.get( i ).getName( ).toLowerCase().compareTo( name.toLowerCase() ) == 0 )
                 return i;
         }
 
