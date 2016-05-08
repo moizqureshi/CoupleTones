@@ -340,13 +340,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d("Test", "At a fav location");
                         manager.fetchPartnerId();
                         final String locName = currUser.getLocations().get(i).getName();
-                        final Integer dubI = i;
+                        //final Integer dubI = i;
                         final Handler handlerP = new Handler();
+                        Log.d("i is ========>", ""+i );
 
                         handlerP.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), (CharSequence) "i = " + dubI.toString() + "yo partner id isssss: " + manager.getPartnerId(), Toast.LENGTH_LONG).show();
+                                //oast.makeText(getApplicationContext(), (CharSequence) "i = " + dubI.toString() + "yo partner id isssss: " + manager.getPartnerId(), Toast.LENGTH_LONG).show();
 
                                 manager.sendMessage( locName );
                             }}, 2000);
@@ -639,11 +640,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
                                 //Toast.makeText( getApplicationContext(), (CharSequence) "parter id: " + manager.getPartnerId(), Toast.LENGTH_LONG ).show( );
 
-                                mpSucc.start();
+                              //  mpSucc.start(); DO NOT DELETE ME
 
                             } else {
                                 Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
-                                mpFail.start();
+                                // mpFail.start(); DO NOT DELETE ME
                             }
                             dialogP.hide();
                         }

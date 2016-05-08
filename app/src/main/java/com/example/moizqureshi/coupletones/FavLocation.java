@@ -47,7 +47,7 @@ public class FavLocation {
     }
 
     public String toString( ) {
-        return name + longtitude() + latitude();
+        return name + latitude() + longtitude();
     }
 
     private String longtitude( ) {
