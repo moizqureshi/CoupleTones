@@ -20,14 +20,14 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class JUnit_DataManager extends AndroidTestCase{
+public class JUnit_DataManager_Test extends AndroidTestCase{
     DataManager managerNew;
     DataManager managerExist;
 
     User newUser;
     User existUser;
 
-    public JUnit_DataManager () {
+    public JUnit_DataManager_Test() {
         super();
     }
 
