@@ -333,7 +333,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Track current location.
          */
         LocationListener locationListener = new LocationListener() {
-            ArrayList<String> locNames = new ArrayList<>();
+//            ArrayList<String> locNames = new ArrayList<>();
+            String locName = "--";
             @Override
             public void onLocationChanged(Location location) {
                 /*
@@ -347,43 +348,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //                manager.sendMessage(currUser.getLocations().get(0).getName());
 
-                for(int i = 0; i < currUser.getLocations().locations.size(); i++) {
-
+                for(int i = 0; i < currUser.getLocations().size(); i++) {
+                    Log.d("Test1", " " +
+                            distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                                    currUser.getLocations().get(i).getLocation()) + " at " + i);
+                    Log.d("Test2", " " + currUser.getLocations().get(i).getName() + " " +currUser.getLocations().get(i).getLocation());
                     //Checking if user is visiting.
                     // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
-                    if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                            currUser.getLocations().get(i).getLocation()) <= 161) { //deleted .locations.
-                        Log.d("Test", "At a fav location");
-                        manager.fetchPartnerId();
-                        final String locName = currUser.getLocations().get(i).getName();
-                        //final Integer dubI = i;
-                        final Handler handlerP = new Handler();
-                        Log.d("i is ========>", ""+i );
-
-                        handlerP.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                //oast.makeText(getApplicationContext(), (CharSequence) "i = " + dubI.toString() + "yo partner id isssss: " + manager.getPartnerId(), Toast.LENGTH_LONG).show();
-
-                                manager.sendMessage( locName );
-                            }}, 2000);
-
-                        for(int j = 0; j < locNames.size(); j++) {
-                            if (locNames.get(j).compareTo(currUser.getLocations().locations.get(i).getName()) != 0) {
-                                //TODO: Send the notification
-//                                manager.sendMessage(currUser.getLocations().get(i).getName());
-
-                                locNames.add(currUser.getLocations().locations.get(i).getName());
-                            }
-                        }
-                    }
                     //Detect if the user has left
-                    for(int k = 0; k < locNames.size(); k++) {
-                        if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                                currUser.getLocations().searchLoc(locNames.get(k)).getLocation()) > 161) {
-                            locNames.remove(k);
+                    if(currUser.getLocations().searchLoc(locName) != null) {
+                        if ((distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                                currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
+
+                            Log.d("Test4", "has left" + locName);
+                            locName = "--";
                         }
                     }
+                    if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
+                            currUser.getLocations().get(i).getLocation()) < 161) { //deleted .locations.
+                        //manager.sendMessage(currUser.getLocations().get(i).getName());
+                        if (locName.compareTo(currUser.getLocations().get(i).getName()) != 0) {
+                            Log.d("Test3", "At a fav location");
+                            manager.fetchPartnerId();
+                            final String name = currUser.getLocations().get(i).getName();
+                            final Handler handlerP = new Handler();
+
+                            handlerP.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    manager.sendMessage(name);
+                                }
+                            }, 2000);
+                            locName = currUser.getLocations().get(i).getName();
+                        }
+                    }
+
                 }
             }
 
