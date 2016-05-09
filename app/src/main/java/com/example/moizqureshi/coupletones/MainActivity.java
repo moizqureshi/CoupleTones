@@ -14,7 +14,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -36,9 +35,7 @@ import android.app.ProgressDialog;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,7 +57,7 @@ import java.util.ArrayList;
 /**
  * Main page of the map
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     protected ourApplication app;
 
@@ -482,13 +479,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void showAddLocationDialog(final LatLng latLng) {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
 
         alert.setTitle("Add a favorite location");
         alert.setMessage("Please assign a location name:");
 
         // Set an EditText view to get user input
-        final EditText input = new EditText(MapsActivity.this);
+        final EditText input = new EditText(MainActivity.this);
         input.setSingleLine();
         input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);
@@ -598,7 +595,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
-                        Intent intent = new Intent(MapsActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(intent);
                         // [END_EXCLUDE]
                     }
@@ -610,12 +607,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Dialog for Adding the partner
      */
     protected void showAddPartnerDialog( ) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         alert.setTitle("Pair with a partner");
         alert.setMessage("Please enter your partner's email:");
 
         // Set an EditText view to get user input
-        final EditText input = new EditText(MapsActivity.this);
+        final EditText input = new EditText(MainActivity.this);
         input.setSingleLine();
         input.setGravity(Gravity.CENTER_HORIZONTAL);
         alert.setView(input);
@@ -624,7 +621,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(DialogInterface dialog, int whichButton) {
                 final String partnerEmail = input.getText().toString();
                 if(!partnerEmail.equals("")) {
-                    final ProgressDialog dialogP=new ProgressDialog(MapsActivity.this);
+                    final ProgressDialog dialogP=new ProgressDialog(MainActivity.this);
 
                     manager.findPartnerEmail(partnerEmail);
 
@@ -679,7 +676,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Dialog for deleting the partner
      */
     protected void showDeletePartnerDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(MapsActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
 
         alert.setTitle("Confirm partner unpairing");
         alert.setMessage("Are you sure want to unpair with your partner?");
