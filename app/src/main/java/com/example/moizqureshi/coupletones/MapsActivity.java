@@ -314,7 +314,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Initialize the map and the camera
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.8800604, -117.2362022), 13));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.8800604, -117.2362022), 15));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         /*
             Setup OnMapClickListener
@@ -340,7 +340,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 /*
                     Implementing favorite location(s) detection
                  */
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
                 /*
                     A loop go through the list of Fav. Loc. to see if closed to and if visiting
                     "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
