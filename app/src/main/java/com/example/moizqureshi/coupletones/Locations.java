@@ -1,6 +1,8 @@
 package com.example.moizqureshi.coupletones;
 
 import java.util.ArrayList;
+
+import android.app.Activity;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -11,8 +13,8 @@ import org.json.JSONException;
 /**
  * Created by Alina on 5/3/2016.
  */
-public class Locations {
-    ArrayList<FavLocation> locations;
+public class Locations extends Activity {
+    public ArrayList<FavLocation> locations;
 
     public Locations(int size ) {
         locations = new ArrayList<>(size);
@@ -96,4 +98,5 @@ public class Locations {
     public int size( ) {
         return locations.size();
     }
+
 }
