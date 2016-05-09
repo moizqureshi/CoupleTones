@@ -125,14 +125,11 @@ public class LoginActivity extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             app.acct = result.getSignInAccount();
 
-//            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             Intent intent = new Intent(this, MapsActivity.class);
 
             startActivity(intent);
-//           updateUI(true);
         } else {
-            // Signed out, show unauthenticated UI.
-//            updateUI(false);
+
         }
     }
     // [END handleSignInResult]
@@ -143,33 +140,6 @@ public class LoginActivity extends AppCompatActivity implements
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     // [END signIn]
-
-    // [START signOut]
-    public void signOut() {
-        Auth.GoogleSignInApi.signOut(app.mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // [START_EXCLUDE]
-//                        updateUI(false);
-                        // [END_EXCLUDE]
-                    }
-                });
-    }
-    // [END signOut]
-
-    // [START revokeAccess]
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(app.mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-//                        updateUI(false);
-                        // [END_EXCLUDE]
-                    }
-                });
-    }
-    // [END revokeAccess]
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
