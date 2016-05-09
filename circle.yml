@@ -25,6 +25,7 @@ test:
            background: true
            parallel: true
        # wait for it to have booted
+       - ADB_INSTALL_TIMEOUT=8
        - circle-android wait-for-boot
        # run tests  against the emulator.
        - ./gradlew connectedAndroidTest
