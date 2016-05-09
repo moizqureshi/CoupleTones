@@ -29,7 +29,7 @@ public class DataManager {
     String partnerId;
     String partnerEmail;
 
-    DataManager(User user) {
+    public DataManager(User user) {
         this.user = user;
     }
 
