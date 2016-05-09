@@ -86,15 +86,15 @@ public class JUnit_DataManager_Test extends AndroidTestCase{
         }, 1000);
     }
 
-    @Test
-    public void testUpdateUser( ) {
-        DataManager m = new DataManager( new User("1", "2", new Locations() ) );
-
-        User myUser = m.updateUser();
-
-        assertEquals("1", myUser.getEmail());
-        assertEquals("2", myUser.getPartnerEmail());
-    }
+//    @Test
+//    public void testUpdateUser( ) {
+//        DataManager m = new DataManager( new User("1", "2", new Locations() ) );
+//
+//        User myUser = m.updateUser();
+//
+//        assertEquals("1", myUser.getEmail());
+//        assertEquals("2", myUser.getPartnerEmail());
+//    }
 
     @Test
     public void testUpdateLocations( ) throws JSONException {
