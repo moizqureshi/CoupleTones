@@ -31,6 +31,14 @@ public class User {
 
     }
 
+    public User( String email, String partnerEmail, Locations locations) {
+        this.email = email;
+        this.partnerEmail = partnerEmail;
+        this.locations = locations;
+
+        partnerId = null;
+    }
+
     public String getEmail( ) {
         return email;
     }
