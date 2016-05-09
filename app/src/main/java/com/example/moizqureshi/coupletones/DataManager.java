@@ -180,7 +180,17 @@ public class DataManager {
         try{
             JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher.jpg'}");
             Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
-            OneSignal.postNotification(pushJson, null);
+            OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i("OneSignal", "postNotification Success: " + response.toString());
+                }
+
+                @Override
+                public void onFailure(JSONObject response) {
+                    Log.e("OneSignal", "postNotification Failure: " + response.toString());
+                }
+            });
 
         } catch (JSONException e) {
             e.printStackTrace();
