@@ -109,7 +109,6 @@ public class JUnit_Locations_Test extends ActivityInstrumentationTestCase2<Locat
         assertEquals( testThreeLocations.searchLoc("Raymond's House"), third);
     }
 
-
     /*Verifies the proper size is returned */
     @Test
     public void size(){
