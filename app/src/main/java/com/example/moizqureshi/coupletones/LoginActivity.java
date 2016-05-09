@@ -29,8 +29,6 @@ public class LoginActivity extends AppCompatActivity implements
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
-//    private GoogleApiClient mGoogleApiClient;
-//
     private ProgressDialog mProgressDialog;
 
     protected ourApplication app;
@@ -63,18 +61,10 @@ public class LoginActivity extends AppCompatActivity implements
                 .build();
         // [END build_client]
 
-        // [START customize_button]
-        // Customize sign-in button. The sign-in button can be displayed in
-        // multiple sizes and color schemes. It can also be contextually
-        // rendered based on the requested scopes. For example. a red button may
-        // be displayed when Google+ scopes are requested, but a white button
-        // may be displayed when only basic profile is requested. Try adding the
-        // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
-        // difference.
+        // Customized Google Sign In Button
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
-        // [END customize_button]
 
     }
 
