@@ -161,22 +161,6 @@ public class DataManager {
         String msg;
         msg = "Your partner is at " + locationName;
 
-//        try {
-//            pushJSON.put("contents", "{'en':'" + msg + "'}");
-//            pushJSON.put("include_player_ids", "['" + partnerId + "']");
-//            pushJSON.put("android_sound", "space_push");
-//            pushJSON.put("large_icon", "ic_launcher.png");
-//
-//            pushJSON.
-//
-//            Log.d("Test", "pushJson is:" + '\n' + pushJSON.toString());
-//
-//            OneSignal.postNotification(pushJSON, null);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
         try{
             JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher.jpg'}");
             Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
@@ -195,12 +179,6 @@ public class DataManager {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-//        try {
-//            OneSignal.postNotification(new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "']}"), null);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
     }
 
 
