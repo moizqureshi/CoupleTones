@@ -1,12 +1,7 @@
 package Tests;
 
 
-import android.test.ActivityInstrumentationTestCase2;
-
 import com.example.moizqureshi.coupletones.FavLocation;
-import com.example.moizqureshi.coupletones.Locations;
-import com.example.moizqureshi.coupletones.LoginActivity;
-import com.example.moizqureshi.coupletones.MapsActivity;
 import com.example.moizqureshi.coupletones.User;
 import com.google.android.gms.maps.model.LatLng;
 import android.test.InstrumentationTestCase;
