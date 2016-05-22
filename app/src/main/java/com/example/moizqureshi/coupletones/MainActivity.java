@@ -63,13 +63,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private Marker onSearchLocationMarker;
-    private ArrayAdapter mAdapter;
+    private ArrayAdapter mAdapter, mLogAdapter;
     private boolean update = false;
 
     private ImageButton mSearchButton;
     private TextView mSettingTitle, mAddPartner, mDeletePartner, mPartner, mSignOut;
     private EditText mSearchView;
-    private ListView mListView;
+    private ListView mListView, mLogListView;
 
     private BottomBar mBottomBar;
 
@@ -79,6 +79,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     //ArrayList for storing the locations during runtime
     private ArrayList<String> nameOfLocationsList = new ArrayList<>();
+    //ArrayList for storing the history during runtime
+    private ArrayList<String> nameOfLogList = new ArrayList<>();
 
     private String temp;
     private Boolean exists = false;
@@ -158,6 +160,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mSignOut = (TextView) findViewById(R.id.signOut);
 
         /*
+           TODO: on Notification Listener for adding the logs
+         */
+        /*
             Add partner listener
          */
         mAddPartner.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +202,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mAdapter = new MyListAdapter(this, R.layout.listview_item, nameOfLocationsList);
         mListView = (ListView) findViewById(R.id.listView);
         mListView.setAdapter(mAdapter);
-
+        /*
+            Setting up the list of history
+         */
+        mLogAdapter = new MyLogListAdapter(this, R.layout.loglist_item, nameOfLogList);
+        mLogListView = (ListView) findViewById(R.id.loglistView);
+        mLogListView.setAdapter(mLogAdapter);
 
         /*
             Setting up the bottom tab bar
@@ -218,6 +228,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     mSearchView.setVisibility(View.VISIBLE);
                     mSearchButton.setVisibility(View.VISIBLE);
                     mListView.setVisibility(View.GONE);
+                    mLogListView.setVisibility(View.GONE);
                     findViewById(R.id.map).setVisibility(View.VISIBLE);
                 }
                 else if (menuItemId == R.id.bottomBarItemOne) {
@@ -228,6 +239,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     mSearchView.setVisibility(View.GONE);
                     mSearchButton.setVisibility(View.GONE);
                     mListView.setVisibility(View.GONE);
+                    mLogListView.setVisibility(View.GONE);
                     findViewById(R.id.map).setVisibility(View.GONE);
 
                     if(currUser.hasPartner()){
@@ -253,6 +265,33 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     mSearchView.setVisibility(View.GONE);
                     mSearchButton.setVisibility(View.GONE);
                     mListView.setVisibility(View.VISIBLE);
+                    mLogListView.setVisibility(View.GONE);
+                    findViewById(R.id.map).setVisibility(View.GONE);
+                }
+                else if (menuItemId == R.id.bottomBarItemFour) {
+                    // The user selected item number three.
+                    mSettingTitle.setVisibility(View.GONE);
+                    mAddPartner.setVisibility(View.GONE);
+                    mDeletePartner.setVisibility(View.GONE);
+                    mPartner.setVisibility(View.GONE);
+                    mSignOut.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.GONE);
+                    mSearchButton.setVisibility(View.GONE);
+                    mListView.setVisibility(View.GONE);
+                    mLogListView.setVisibility(View.GONE);
+                    findViewById(R.id.map).setVisibility(View.GONE);
+                }
+                else if (menuItemId == R.id.bottomBarItemFive) {
+                    // The user selected item number three.
+                    mSettingTitle.setVisibility(View.GONE);
+                    mAddPartner.setVisibility(View.GONE);
+                    mDeletePartner.setVisibility(View.GONE);
+                    mPartner.setVisibility(View.GONE);
+                    mSignOut.setVisibility(View.GONE);
+                    mSearchView.setVisibility(View.GONE);
+                    mSearchButton.setVisibility(View.GONE);
+                    mListView.setVisibility(View.GONE);
+                    mLogListView.setVisibility(View.VISIBLE);
                     findViewById(R.id.map).setVisibility(View.GONE);
                 }
             }
@@ -563,6 +602,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 nameOfLocationsList.add(currUser.getLocations().get(i).getName());
             }
         }
+        //TODO: Also fill the Tones setting list
+
 
     }
 
@@ -730,7 +771,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /*
-        Adapter for dynamically constructing the listview
+        Adapter for dynamically constructing the favorite location's listview
      */
     public class MyListAdapter extends ArrayAdapter<String> {
 
@@ -783,6 +824,42 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             TextView title;
             Button button;
+        }
+    }
+
+    /*
+        Adapter for dynamically constructing the log's listview
+     */
+    public class MyLogListAdapter extends ArrayAdapter<String> {
+
+        private int layout;
+        private List<String> myLogObjects;
+
+        public MyLogListAdapter(Context context, int resource, List<String> objects) {
+            super(context, resource, objects);
+            myLogObjects = objects;
+            layout = resource;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder mainViewHolder = null;
+            ViewHolder viewHolder = new ViewHolder();
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                convertView = inflater.inflate(layout, parent, false);
+                viewHolder.title = (TextView) convertView.findViewById(R.id.log_item_text);
+                convertView.setTag(viewHolder);
+            }
+
+            mainViewHolder = (ViewHolder) convertView.getTag();
+            mainViewHolder.title.setText(getItem(position));
+
+            return convertView;
+        }
+
+        protected class ViewHolder {
+            TextView title;
         }
     }
 
