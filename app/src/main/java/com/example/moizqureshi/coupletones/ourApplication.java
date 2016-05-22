@@ -20,7 +20,6 @@ import org.json.JSONObject;
  * Created by Team 3 on 5/5/16.
  */
 public class ourApplication extends Application {
-
     OptionalPendingResult<GoogleSignInResult> opr;
     GoogleApiClient mGoogleApiClient;
     GoogleSignInAccount acct;
