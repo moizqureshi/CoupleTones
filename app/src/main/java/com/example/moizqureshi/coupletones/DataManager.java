@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Benjamin on 5/5/2016.
@@ -57,11 +58,16 @@ public class DataManager {
                                     if (e == null) {
                                         //partnerId = object.getString("partnerId");
                                         partnerEmail = object.getString("partnerEmail");
-                                        user.setPartnerEmail( partnerEmail );
+                                        user.setPartnerEmail(partnerEmail);
 //                                        Log.d("test", "user has partner "+getPartnerEmail());
 
                                         try {
-                                            user.getLocations().update( object.getJSONArray("locationsList") );
+                                            user.getLocations().update(object.getJSONArray("locationsList"));
+                                        } catch (JSONException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                        try {
+                                            user.getHistory().update(object.getJSONArray("HistoryList"));
                                         } catch (JSONException e1) {
                                             e1.printStackTrace();
                                         }
@@ -78,6 +84,80 @@ public class DataManager {
             }
         });
         user.setHasPartner(user.hasPartner());
+    }
+
+    public Logs getPartnerHistory( ) {
+        final Logs partnerHistory = new Logs();
+        ParseQuery< ParseObject > query = ParseQuery.getQuery("CoupleTone");
+        query.whereEqualTo("email", user.getPartnerEmail());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) {
+                    //Log.d("getPartnerHistory", "Could not find such user");
+                } else {
+                    try {
+                        partnerHistory.update(object.getJSONArray("HistoryList"));
+                    } catch( JSONException e2 ) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        return partnerHistory;
+    }
+
+    //need to call update user after using this.
+    public void refreshHistory( User newUser ) {
+        user = newUser;
+        boolean parse = false;
+        long fullDay = 24*3600*1000;
+        long allSec = 0;
+
+        while( true ) {
+            if( user.getHistory().size() == 0)
+                break;
+            allSec = user.getHistory().get().getInTime().getTimeInMillis();
+
+            if( (allSec + fullDay) <= allSec ) {
+                user.getHistory().remove();
+                parse = true;
+            } else {
+                break;
+            }
+        }
+
+        if ( !parse )
+            return;
+
+        updateHistory( null );
+
+
+    }
+
+    public void updateHistory( User newUser ) {
+        if( newUser != null )
+            user = newUser;
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
+        query.whereEqualTo("email", user.getEmail() );
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) { //There isn't a user
+
+                } else {
+                    try {
+                        object.put("HistoryList", user.getHistory().getList() );
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    object.saveInBackground();
+                }
+            }
+        });
+
     }
 
     public void updatePartnerEmail( User newUser ) {
