@@ -98,7 +98,6 @@ public class ourApplication extends Application {
                         }
                     }
 
-
                     additionalMessage = message + "\nFull additionalData:\n" + additionalData.toString();
                 }
 
