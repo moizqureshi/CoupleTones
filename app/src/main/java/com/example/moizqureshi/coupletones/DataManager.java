@@ -27,6 +27,7 @@ import java.util.Calendar;
  */
 public class DataManager {
     User user;
+    String signalId;
     String partnerId;
     String partnerEmail;
 
@@ -38,6 +39,8 @@ public class DataManager {
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
             public void idsAvailable(String userId, String registrationId) {
+                signalId = userId;
+                user.setSingalId(userId);
                 final String signal_id = userId;
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
                 query.whereEqualTo("email", user.getEmail() );
@@ -56,7 +59,7 @@ public class DataManager {
                             object.fetchInBackground(new GetCallback<ParseObject>() {
                                 public void done(ParseObject object, ParseException e) {
                                     if (e == null) {
-                                        //partnerId = object.getString("partnerId");
+                                        partnerId = object.getString("partnerId");
                                         partnerEmail = object.getString("partnerEmail");
                                         user.setPartnerEmail(partnerEmail);
 //                                        Log.d("test", "user has partner "+getPartnerEmail());
@@ -76,7 +79,6 @@ public class DataManager {
                                     }
                                 }
                             });
-
                         }
                     }
                 });
@@ -224,9 +226,9 @@ public class DataManager {
         });
     }
 
-    public void fetchPartnerId( ) {
+    public void fetchPartnerId(String email ) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
-        query.whereEqualTo("email", user.getPartnerEmail() );
+        query.whereEqualTo("email", email);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
                 if (object == null) { //There isn't a user
@@ -259,7 +261,7 @@ public class DataManager {
         msg = "Your partner is at " + locationName;
 
         try{
-            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher.jpg'}");
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher'}");
             Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
             OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
                 @Override
@@ -278,5 +280,83 @@ public class DataManager {
         }
     }
 
+    public void sendPairRequest(String id) {
+        JSONObject pushJSON = new JSONObject();
+        String msg;
+        msg = "Accept pair request from " + user.getEmail();
 
+
+        try{
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + id + "'], 'large_icon':'ic_launcher', " +
+                    "'buttons': [{id: 'acceptBtn', text: 'Accept', icon:'ic_done_white_48dp'}, {id: 'declineBtn', text: 'Decline', icon: 'ic_close_white_48dp'}], 'data': {'email': '" + user.getEmail() + "', 'fromID':'" + user.getSingalId() +"' }}");
+            Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
+            OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i("OneSignal", "postNotification Success: " + response.toString());
+                }
+
+                @Override
+                public void onFailure(JSONObject response) {
+                    Log.e("OneSignal", "postNotification Failure: " + response.toString());
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendPairSuccess(String id, String email) {
+        JSONObject pushJSON = new JSONObject();
+        String msg;
+        msg = "Pairing with " + email + " was successful!";
+
+        try{
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + id + "'], 'large_icon':'ic_launcher', 'data': {'email': '" + user.getEmail() + "', 'fromID':'" + user.getSingalId() +"', 'pairSuccess':'true' }}");
+            Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
+            OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i("OneSignal", "postNotification Success: " + response.toString());
+                }
+
+                @Override
+                public void onFailure(JSONObject response) {
+                    Log.e("OneSignal", "postNotification Failure: " + response.toString());
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendPairFail(String id, String email) {
+        JSONObject pushJSON = new JSONObject();
+        String msg;
+        msg = "Pairing with " + email + " was denied!";
+
+        try{
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + id + "'], 'large_icon':'ic_launcher', 'data': {'email': '" + user.getEmail() + "', 'fromID':'" + user.getSingalId() +"', 'pairSuccess':'false' }}");
+            Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
+            OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i("OneSignal", "postNotification Success: " + response.toString());
+                }
+
+                @Override
+                public void onFailure(JSONObject response) {
+                    Log.e("OneSignal", "postNotification Failure: " + response.toString());
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+
+
