@@ -73,7 +73,6 @@ public class DataManager {
                                     }
                                 }
                             });
-
                         }
                     }
                 });
@@ -259,7 +258,6 @@ public class DataManager {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 }
 
