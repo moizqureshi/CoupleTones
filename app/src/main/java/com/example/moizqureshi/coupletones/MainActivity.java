@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.ProgressDialog;
 
+
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -67,15 +68,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean update = false;
 
     private ImageButton mSearchButton;
-    private TextView mSettingTitle, mAddPartner, mDeletePartner, mPartner, mSignOut;
+    private TextView mSettingTitle, mAddPartner, mDeletePartner, mSignOut;
+    static TextView mPartner;
     private EditText mSearchView;
     private ListView mListView;
 
+
     private BottomBar mBottomBar;
-
-    private User currUser;
-
-    DataManager manager;
 
     //ArrayList for storing the locations during runtime
     private ArrayList<String> nameOfLocationsList = new ArrayList<>();
@@ -100,19 +99,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_main);
 
         app = (ourApplication)getApplication();
-
         makeUser( );
         final Handler signinHandler = new Handler();
-        currUser = new User( );
+        app.currUser = new User( );
 
         //Signing in wait
         signinHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
 
-                currUser = new User(app.acct);
-                manager = new DataManager(currUser);
-                manager.setUp();
+                app.currUser = new User(app.acct);
+                app.manager = new DataManager(app.currUser);
+                app.manager.setUp();
             }}, 500);
 
         //Making a window to make use wait until we initialize data
@@ -126,12 +124,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                currUser = manager.updateUser();
+                app.currUser = app.manager.updateUser();
                 fillListFromUser();
                 mAdapter.notifyDataSetChanged();
                 dialog.hide();
 
-                if(currUser.hasPartner()){
+                if(app.currUser.hasPartner()){
                     mAddPartner.setVisibility(View.GONE);
                     mDeletePartner.setVisibility(View.VISIBLE);
                 } else {
@@ -230,10 +228,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     mListView.setVisibility(View.GONE);
                     findViewById(R.id.map).setVisibility(View.GONE);
 
-                    if(currUser.hasPartner()){
+                    if(app.currUser.hasPartner()){
                         mAddPartner.setVisibility(View.GONE);
                         mDeletePartner.setVisibility(View.VISIBLE);
-                        mPartner.setText("Partner: " + currUser.getPartnerEmail());
+                        mPartner.setText("Partner: " + app.currUser.getPartnerEmail());
                         mPartner.setVisibility(View.VISIBLE);
 
                     } else {
@@ -341,38 +339,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     "usersFavLocsList" is the name of the list which storing the user's Fav. Locs. - can be modify later
                  */
 
-                for(int i = 0; i < currUser.getLocations().size(); i++) {
+                for(int i = 0; i < app.currUser.getLocations().size(); i++) {
                     Log.d("Test1", " " +
                             distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                                    currUser.getLocations().get(i).getLocation()) + " at " + i);
-                    Log.d("Test2", " " + currUser.getLocations().get(i).getName() + " " +currUser.getLocations().get(i).getLocation());
+                                    app.currUser.getLocations().get(i).getLocation()) + " at " + i);
+                    Log.d("Test2", " " + app.currUser.getLocations().get(i).getName() + " " + app.currUser.getLocations().get(i).getLocation());
                     //Checking if user is visiting.
                     // "< 161" means if the distance between user and the Fav. Loc. is less than 161 meters which is 0.1 mile
                     //Detect if the user has left
-                    if(currUser.getLocations().searchLoc(locName) != null) {
+                    if(app.currUser.getLocations().searchLoc(locName) != null) {
                         if ((distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                                currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
+                                app.currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
 
                             Log.d("Test4", "has left" + locName);
                             locName = "--";
                         }
                     }
                     if (distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
-                            currUser.getLocations().get(i).getLocation()) < 161) { //deleted .locations.
+                            app.currUser.getLocations().get(i).getLocation()) < 161) { //deleted .locations.
                         //manager.sendMessage(currUser.getLocations().get(i).getName());
-                        if (locName.compareTo(currUser.getLocations().get(i).getName()) != 0) {
+                        if (locName.compareTo(app.currUser.getLocations().get(i).getName()) != 0) {
                             Log.d("Test3", "At a fav location");
-                            manager.fetchPartnerId();
-                            final String name = currUser.getLocations().get(i).getName();
+                            app.manager.fetchPartnerId(app.manager.getPartnerEmail());
+                            final String name = app.currUser.getLocations().get(i).getName();
                             final Handler handlerP = new Handler();
 
                             handlerP.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    manager.sendMessage(name);
+                                    app.manager.sendMessage(name);
                                 }
                             }, 2000);
-                            locName = currUser.getLocations().get(i).getName();
+                            locName = app.currUser.getLocations().get(i).getName();
                         }
                     }
 
@@ -496,14 +494,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     boolean duplicateNameOrLocation = false;
                     String locName = input.getText().toString();
 
-                    for (int i = 0; i < currUser.getLocations().size(); i++) {
+                    for (int i = 0; i < app.currUser.getLocations().size(); i++) {
                     /*
                         No duplicate name
                         And not allowing adding location that close to an existing location by 0.2 mile which is 362 meters
                      */
 
-                        if ((locName.compareTo(currUser.getLocations().get(i).getName()) == 0)
-                                || (distanceBetween(latLng, currUser.getLocations().get(i).getLocation()) < 362)) {
+                        if ((locName.compareTo(app.currUser.getLocations().get(i).getName()) == 0)
+                                || (distanceBetween(latLng, app.currUser.getLocations().get(i).getLocation()) < 362)) {
 
                             duplicateNameOrLocation = true;
                         }
@@ -513,9 +511,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         //Adding the locations here
                         Toast.makeText(getApplicationContext(), "Location Added", Toast.LENGTH_SHORT).show();
 
-                        currUser.getLocations().add(new FavLocation(locName, latLng));
+                        app.currUser.getLocations().add(new FavLocation(locName, latLng));
                         try {
-                            manager.updateLocations( currUser, currUser.getLocations().getList() );
+                            app.manager.updateLocations( app.currUser, app.currUser.getLocations().getList() );
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -558,9 +556,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Function for coping the list from server to local
      */
     public void fillListFromUser() {
-        if (currUser.getLocations().size() != 0){
-            for (int i = 0; i < currUser.getLocations().size(); i++) {
-                nameOfLocationsList.add(currUser.getLocations().get(i).getName());
+        if (app.currUser.getLocations().size() != 0){
+            for (int i = 0; i < app.currUser.getLocations().size(); i++) {
+                nameOfLocationsList.add(app.currUser.getLocations().get(i).getName());
             }
         }
 
@@ -622,7 +620,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if(!partnerEmail.equals("")) {
                     final ProgressDialog dialogP=new ProgressDialog(MainActivity.this);
 
-                    manager.findPartnerEmail(partnerEmail);
+                    app.manager.findPartnerEmail(partnerEmail);
+                    app.manager.fetchPartnerId(partnerEmail);
+
 
                     dialogP.setMessage("Searching...");
                     dialogP.setCancelable(false);
@@ -633,20 +633,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     handlerP.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(!manager.getPartnerEmail().equals("--")) {
-                                currUser.setPartnerEmail(partnerEmail);
-                                //manager.fetchPartnerId();
-                                //currUser.setPartnerId(manager.getPartnerId( ));
-                                manager.updatePartnerEmail(currUser);
-
-                                mAddPartner.setVisibility(View.GONE);
-                                mPartner.setText("Partner: " + currUser.getPartnerEmail());
-                                mPartner.setVisibility(View.VISIBLE);
-                                mDeletePartner.setVisibility(View.VISIBLE);
-
-                                Toast.makeText( getApplicationContext(), (CharSequence) "Pairing with: " + currUser.getPartnerEmail(), Toast.LENGTH_LONG ).show( );
-
-                                mpSucc.start();
+                            if(!app.manager.getPartnerEmail().equals("--")) {
+                               app.manager.sendPairRequest(app.manager.getPartnerId());
+                               mPartner.setText("Pending invitation");
 
                             } else {
                                 Toast.makeText(getApplicationContext(), (CharSequence) "Partner does not have CoupleTones!", Toast.LENGTH_LONG).show();
@@ -685,12 +674,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                if (!currUser.hasPartner()) {
+                if (!app.currUser.hasPartner()) {
                     Toast.makeText( getApplicationContext(), (CharSequence) "Not currently paired with anyone!", Toast.LENGTH_LONG ).show( );
                 }
                 Toast.makeText( getApplicationContext(), (CharSequence) "Removed partner", Toast.LENGTH_LONG ).show( );
-                currUser.removePartner();
-                manager.updatePartnerEmail(currUser);
+                app.currUser.removePartner();
+                app.manager.updatePartnerEmail(app.currUser);
 
                 mpDel.start();
 
@@ -709,6 +698,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         alert.show();
     }
+
+    public static void setPartnerTxt(String partnerEmail){
+        mPartner.setText("Partner: " + partnerEmail);
+    }
+
+
+
     /*
         Checking if the input is alphanumeric
      */
@@ -761,9 +757,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onClick(View v) {
                     String locName = nameOfLocationsList.get(position);
-                    currUser.getLocations().remove(locName);
+                    app.currUser.getLocations().remove(locName);
                     try {
-                        manager.updateLocations( currUser, currUser.getLocations().getList() );
+                        app.manager.updateLocations( app.currUser, app.currUser.getLocations().getList() );
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -785,5 +781,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Button button;
         }
     }
+
 
 }
