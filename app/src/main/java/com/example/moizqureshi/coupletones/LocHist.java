@@ -1,4 +1,6 @@
 package com.example.moizqureshi.coupletones;
+import android.provider.CalendarContract;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,8 +24,30 @@ public class LocHist {
     public LocHist( String fullLog ) {
         int year, month, day, hours, mins, secs;
 
-        name = fullLog.substring(0, fullLog.indexOf("-") - 1);
+        name = fullLog.substring(0, fullLog.indexOf('-') - 1);
+        fullLog = fullLog.substring( fullLog.indexOf('-') + 6 );
 
+        year = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('/')) );
+        fullLog = fullLog.substring( fullLog.indexOf('/') + 1);
+
+        month = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('/')) );
+        fullLog = fullLog.substring( fullLog.indexOf('/') + 1);
+
+        day = Integer.parseInt( fullLog.substring(0, fullLog.indexOf(' ')) );
+        fullLog = fullLog.substring( fullLog.indexOf(' ') + 1);
+
+        hours = Integer.parseInt( fullLog.substring(0, fullLog.indexOf(':')) );
+        fullLog = fullLog.substring( fullLog.indexOf(':') + 1);
+
+        mins = Integer.parseInt( fullLog.substring(0, fullLog.indexOf(':')) );
+        fullLog = fullLog.substring( fullLog.indexOf(':') + 1);
+
+        secs = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('-') -1 ) );
+
+        inTime = Calendar.getInstance();
+        inTime.set( year - 1900, month, day, hours, mins, secs);
+
+        outTime = null;
         //Finish this later
     }
 
