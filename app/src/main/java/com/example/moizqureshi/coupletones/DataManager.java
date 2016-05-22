@@ -86,6 +86,12 @@ public class DataManager {
         user.setHasPartner(user.hasPartner());
     }
 
+    /**
+     * This is a method to call in order to see the partner's history. It gives you a Logs object
+     * which you can manipulate to show the history into the UI.
+     * Need to have the right partner's ID!!!!!
+     * @return partner's history
+     */
     public Logs getPartnerHistory( ) {
         final Logs partnerHistory = new Logs();
         ParseQuery< ParseObject > query = ParseQuery.getQuery("CoupleTone");
@@ -108,7 +114,14 @@ public class DataManager {
         return partnerHistory;
     }
 
-    //need to call update user after using this.
+    /**
+     * This method refreshs the history. It iterate through Logs and see if 24hour has passed already.
+     * If it has then we remove it and we call updateHistory which will rewrite the history in the
+     * server.
+     *
+     * YOU MUST call UpdateUser( ) after this call
+     * @param newUser
+     */
     public void refreshHistory( User newUser ) {
         user = newUser;
         boolean parse = false;
@@ -136,6 +149,10 @@ public class DataManager {
 
     }
 
+    /**
+     * Updates the history in the server. Not much.
+     * @param newUser
+     */
     public void updateHistory( User newUser ) {
         if( newUser != null )
             user = newUser;
