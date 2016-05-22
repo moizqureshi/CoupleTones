@@ -2,7 +2,12 @@ package com.example.moizqureshi.coupletones;
 
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -10,8 +15,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.maps.MapFragment;
 import com.onesignal.OneSignal;
 import com.parse.Parse;
+import android.widget.TextView;
+import android.view.View;
+
 
 import org.json.JSONObject;
 
@@ -25,9 +34,11 @@ public class ourApplication extends Application {
     GoogleApiClient mGoogleApiClient;
     GoogleSignInAccount acct;
 
+    DataManager manager;
+    User currUser;
+
     public void onCreate(){
         super.onCreate();
-
 
 
         Parse.initialize(new Parse.Configuration.Builder(this)
@@ -59,11 +70,34 @@ public class ourApplication extends Application {
         @Override
         public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
             String additionalMessage = "";
-
             try {
                 if (additionalData != null) {
-                    if (additionalData.has("actionSelected"))
-                        additionalMessage += "Pressed ButtonID: " + additionalData.getString("actionSelected");
+                    Log.d("Notification from: ", additionalData.getString("fromID"));
+                    if (additionalData.has("actionSelected")) {
+                        if(additionalData.getString("actionSelected").toString().equals("acceptBtn")) {
+                            currUser.setPartnerEmail(additionalData.getString("email"));
+                            manager.updatePartnerEmail(currUser);
+                            MainActivity.setPartnerTxt(currUser.getPartnerEmail());
+                            manager.sendPairSuccess(additionalData.getString("fromID"), additionalData.getString("email"));
+
+                            additionalMessage += "Pressed ButtonID: " + additionalData.getString("actionSelected");
+                            Log.d("Test", "Accepted pair request: Partner is: " + currUser.getPartnerEmail());
+                        } else {
+                            manager.sendPairFail(additionalData.getString("fromID"), additionalData.getString("email"));
+                        }
+                    }
+
+                    if (additionalData.has("pairSuccess")) {
+                        if(additionalData.getString("pairSuccess").toString().equals("true")) {
+                            currUser.setPartnerEmail(additionalData.getString("email"));
+                            manager.updatePartnerEmail(currUser);
+                            MainActivity.setPartnerTxt(currUser.getPartnerEmail());
+                            Log.d("Test", "Pairing was successful with " + currUser.getPartnerEmail());
+                        } else {
+                            Log.d("Test", "Pairing declined by " + additionalData.getString("email"));
+                        }
+                    }
+
 
                     additionalMessage = message + "\nFull additionalData:\n" + additionalData.toString();
                 }
@@ -74,9 +108,4 @@ public class ourApplication extends Application {
             }
         }
     }
-
-
-
-
-
 }
