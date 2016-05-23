@@ -1,5 +1,6 @@
 package com.example.moizqureshi.coupletones;
 import android.provider.CalendarContract;
+import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,7 +14,7 @@ public class LocHist {
     private Calendar inTime;
     private Calendar outTime;
 
-    private final static DateFormat FORMATOR = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private final static DateFormat FORMATOR = new SimpleDateFormat("mm/dd HH:mm:ss");
 
     public LocHist(String name, Calendar inTime ) {
         this.name = name;
@@ -26,12 +27,14 @@ public class LocHist {
 
         name = fullLog.substring(0, fullLog.indexOf('-') - 1);
         fullLog = fullLog.substring( fullLog.indexOf('-') + 6 );
+        //Log.d("date string:", fullLog);
 
-        year = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('/')) );
+       /* year = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('/')) );
         fullLog = fullLog.substring( fullLog.indexOf('/') + 1);
-
+        */
         month = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('/')) );
         fullLog = fullLog.substring( fullLog.indexOf('/') + 1);
+        //Log.d("mins:", ""+month);
 
         day = Integer.parseInt( fullLog.substring(0, fullLog.indexOf(' ')) );
         fullLog = fullLog.substring( fullLog.indexOf(' ') + 1);
@@ -45,10 +48,36 @@ public class LocHist {
         secs = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('-') -1 ) );
 
         inTime = Calendar.getInstance();
-        inTime.set( year - 1900, month, day, hours, mins, secs);
+        inTime.set( 116, month, day, hours, mins, secs);
+        //Log.d("mins after:", ""+inTime.get(Calendar.MONTH));
 
-        outTime = null;
-        //Finish this later
+        fullLog = fullLog.substring( fullLog.indexOf('-') + 7);
+        String checker;
+
+        checker = fullLog.substring(0, 4);
+
+        if( checker.equals("NONE") )
+            outTime = null;
+        else {
+            /*year = Integer.parseInt(fullLog.substring(0, fullLog.indexOf('/')));
+            fullLog = fullLog.substring(fullLog.indexOf('/') + 1);
+            */
+            month = Integer.parseInt(fullLog.substring(0, fullLog.indexOf('/')));
+            fullLog = fullLog.substring(fullLog.indexOf('/') + 1);
+
+            day = Integer.parseInt(fullLog.substring(0, fullLog.indexOf(' ')));
+            fullLog = fullLog.substring(fullLog.indexOf(' ') + 1);
+
+            hours = Integer.parseInt(fullLog.substring(0, fullLog.indexOf(':')));
+            fullLog = fullLog.substring(fullLog.indexOf(':') + 1);
+
+            mins = Integer.parseInt(fullLog.substring(0, fullLog.indexOf(':')));
+            fullLog = fullLog.substring(fullLog.indexOf(':') + 1);
+
+            secs = Integer.parseInt(fullLog);
+            outTime = Calendar.getInstance();
+            outTime.set(116, month, day, hours, mins, secs);
+        }
     }
 
     public String getName( ) {
@@ -67,9 +96,18 @@ public class LocHist {
         this.outTime = outTime;
     }
 
+    //name - in: yyyy/mm/dd hh:mm:ss - out: yyyy/mm/dd hh:mm:ss
     @Override
     public String toString( ) {
-        String fullLog =  name+" - in: "+FORMATOR.format(inTime.getTime())+" - out: ";
+        int month, day, hours, min, sec;
+        month = inTime.get(Calendar.MONTH);
+        day = inTime.get(Calendar.DAY_OF_MONTH);
+        hours = inTime.get(Calendar.HOUR);
+        min = inTime.get(Calendar.MINUTE);
+        sec = inTime.get( Calendar.SECOND);
+
+        String fullLog =  name+" - in: "+month+"/"+day+" "+hours+":"+min+":"+sec+" - out: ";
+
 
         if( outTime == null)
             fullLog += "NONE";

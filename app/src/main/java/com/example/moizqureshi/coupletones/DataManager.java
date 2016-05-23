@@ -92,20 +92,30 @@ public class DataManager {
      * This is a method to call in order to see the partner's history. It gives you a Logs object
      * which you can manipulate to show the history into the UI.
      * Need to have the right partner's ID!!!!!
+     * EXAMPLE:
+     * in mainactivity:
+     * Logs partnerLog = app.manager.getPartnerHistory();
+     *
+     * then to show stuff you just call:
+     * i = partnerLog.size()-1;
+     * partnerLog.get( i );
+     * i--
      * @return partner's history
      */
-    public Logs getPartnerHistory( ) {
+    public Logs fetchPartnerHistory( ) {
         final Logs partnerHistory = new Logs();
-        ParseQuery< ParseObject > query = ParseQuery.getQuery("CoupleTone");
+        ParseQuery< ParseObject > query = ParseQuery.getQuery("CoupleTones");
         query.whereEqualTo("email", user.getPartnerEmail());
+       // Log.d("The email: ", user.getPartnerEmail());
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
                 if (object == null) {
-                    //Log.d("getPartnerHistory", "Could not find such user");
+                   // Log.d("getPartnerHistory", "Could not find such user: " + user.getPartnerEmail());
                 } else {
                     try {
                         partnerHistory.update(object.getJSONArray("HistoryList"));
+                        //Log.d("size: ", ""+partnerHistory.get().getInTime().get(Calendar.MONTH));
                     } catch( JSONException e2 ) {
                         e2.printStackTrace();
                     }
@@ -114,6 +124,30 @@ public class DataManager {
         });
 
         return partnerHistory;
+    }
+
+    public Locations fetchPartnerLocations( ) {
+        final Locations partnerLocations = new Locations();
+        ParseQuery< ParseObject > query = ParseQuery.getQuery("CoupleTones");
+        query.whereEqualTo("email", user.getPartnerEmail());
+        // Log.d("The email: ", user.getPartnerEmail());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) {
+                    // Log.d("getPartnerHistory", "Could not find such user: " + user.getPartnerEmail());
+                } else {
+                    try {
+                        partnerLocations.update(object.getJSONArray("locationsList"));
+                        //Log.d("size: ", ""+partnerHistory.get().getInTime().get(Calendar.MONTH));
+                    } catch( JSONException e2 ) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        return partnerLocations;
     }
 
     /**
@@ -126,7 +160,7 @@ public class DataManager {
      */
     public void refreshHistory( User newUser ) {
         user = newUser;
-        boolean parse = false;
+        //boolean parse = false;
         long fullDay = 24*3600*1000;
         long allSec = 0;
 
@@ -137,14 +171,11 @@ public class DataManager {
 
             if( (allSec + fullDay) <= allSec ) {
                 user.getHistory().remove();
-                parse = true;
+                //parse = true;
             } else {
                 break;
             }
         }
-
-        if ( !parse )
-            return;
 
         updateHistory( null );
 
@@ -153,6 +184,13 @@ public class DataManager {
 
     /**
      * Updates the history in the server. Not much.
+     * Example:
+     * in mainactivity:
+     * aftrer sending notification do the following:
+     * app.currUser.getHistory().add( new LocHist( THE_LOCATION_OBJECT.getName(), Calender.getInstance() );
+     * app.manager.updateHistory( app.currUser );
+     * then call refresh
+     * app.manager.refreshHistory( app.currUser );
      * @param newUser
      */
     public void updateHistory( User newUser ) {
