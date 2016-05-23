@@ -1,5 +1,7 @@
 package com.example.moizqureshi.coupletones;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -59,6 +61,9 @@ public class Logs {
 
         for(int i = 0; i < dbHistory.length(); i++) {
             newLocations.add( new LocHist( dbHistory.getString(i) ) );
+            //Log.d("json his:", dbHistory.getString(i));
+            //Log.d("newHist:", newLocations.get(i).toString());
+
         }
 
         history = newLocations;
