@@ -37,6 +37,16 @@ public class Logs {
         history.remove(0);
     }
 
+    public LocHist search( String name ) {
+        for( int i = 0; i < history.size(); i++ ) {
+            if( history.get(i).getName().equals( name ) ) {
+                return history.get(i);
+            }
+        }
+
+        return null;
+    }
+
     public int size( ) {
         return history.size();
     }
