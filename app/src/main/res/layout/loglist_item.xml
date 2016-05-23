@@ -11,7 +11,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="11dp"
         android:elegantTextHeight="true"
-        android:textSize="28dp"
+        android:textSize="12dp"
         android:textStyle="bold"/>
 
 
