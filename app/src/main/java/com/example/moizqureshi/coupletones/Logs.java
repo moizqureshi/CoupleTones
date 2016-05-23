@@ -38,7 +38,7 @@ public class Logs {
     }
 
     public LocHist search( String name ) {
-        for( int i = 0; i < history.size(); i++ ) {
+        for( int i = history.size()-1; i >= 0; i-- ) {
             if( history.get(i).getName().equals( name ) ) {
                 return history.get(i);
             }
