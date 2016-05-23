@@ -111,9 +111,15 @@ public class LocHist {
 
         if( outTime == null)
             fullLog += "NONE";
-        else
-            fullLog += FORMATOR.format(outTime.getTime());
+        else {
+            month = outTime.get(Calendar.MONTH);
+            day = outTime.get(Calendar.DAY_OF_MONTH);
+            hours = outTime.get(Calendar.HOUR);
+            min = outTime.get(Calendar.MINUTE);
+            sec = outTime.get( Calendar.SECOND);
+            fullLog += month+"/"+day+" "+hours+":"+min+":"+sec;
 
+        }
         return fullLog;
     }
 

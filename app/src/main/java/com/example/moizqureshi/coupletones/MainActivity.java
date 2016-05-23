@@ -54,6 +54,7 @@ import org.json.JSONException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.RunnableFuture;
 
 
 /**
@@ -410,6 +411,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 app.currUser.getLocations().searchLoc(locName).getLocation())) > 161) {
 
                             Log.d("Test4", "has left" + locName);
+                            LocHist currPlace = app.currUser.getHistory().search(locName);
+                            if( currPlace != null ) {
+                                currPlace.setOutTime(Calendar.getInstance());
+                                app.manager.updateHistory( app.currUser );
+                            }
+                            // todo left set the out time.
                             locName = "--";
                         }
                     }
@@ -657,7 +664,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
     public void fillPartnerLocFromUser() {
-        nameOfPartnerLocs = new ArrayList<>();
+        nameOfPartnerLocs.removeAll( nameOfPartnerLocs );
         final Locations partnerLocs = app.manager.fetchPartnerLocations();
 
         Handler hd2 = new Handler();
@@ -671,11 +678,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 mPartnerLocAdapter.notifyDataSetChanged();
             }
-        }, 2000);
+        }, 1000);
     }
 
     public void fillLogFromUser() {
-        nameOfLogList = new ArrayList<>();
+        nameOfLogList.removeAll( nameOfLogList );
         final Logs partnerLog = app.manager.fetchPartnerHistory();
 
         Handler hd = new Handler();
@@ -685,12 +692,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if( partnerLog.size() != 0) {
                     for( int i = partnerLog.size()-1; i >= 0; i-- ) {
                         nameOfLogList.add( partnerLog.get(i).toString() );
-                        //Log.d("Adding a partner's log", "The partner is: " + app.currUser.getPartnerEmail() + " and the history is: " + partnerLog.get(i).toString() );
+                        Log.d("Adding a partner's log", "The partner is: " + app.currUser.getPartnerEmail() + " and the history is: " + partnerLog.get(i).toString() );
                     }
                 }
                 mLogAdapter.notifyDataSetChanged();
                 //mLogAdapter.notifyDataSetChanged();
-            }}, 2000);
+            }}, 1000);
 
         //TODO: Also fill the Tones setting list
 
