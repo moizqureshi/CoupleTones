@@ -23,11 +23,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.ProgressDialog;
@@ -84,6 +86,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<String> nameOfLogList = new ArrayList<>();
     //ArrayList for storing partner fav locations
     private ArrayList<String> nameOfPartnerLocs = new ArrayList<>();
+
+    //TODO: Need to creat an ArrayList hold Partner's location's name and the user's tones' choices corresponding to the locations
+    //TODO: Might be done by creating a "PartnerLocation" structure/class hold "String loc_name", "int soundSeleted", "int vibrationSelected"
+    //TODO: Then make an Arraylist<PartnerLocation> inside the "User" class, then the list can be access through ourApplication
+    //
 
     private String temp;
     private Boolean exists = false;
@@ -284,6 +291,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 else if (menuItemId == R.id.bottomBarItemFour) {
                     // The user selected item number three.
                     fillPartnerLocFromUser();
+                    //line below is just for testing the drop down lists
+                    //nameOfPartnerLocs.add("sound");
+                    mPartnerLocAdapter.notifyDataSetChanged();
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
                     mDeletePartner.setVisibility(View.GONE);
@@ -645,7 +655,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 //mLogAdapter.notifyDataSetChanged();
             }}, 2000);
 
-        //TODO: Also fill the Tones setting list
+        //TODO: Also fill the Tones' choices' list
 
         final Locations partnerLocs = app.manager.fetchPartnerLocations();
 
@@ -663,6 +673,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }, 2000); //THIST
 
     }
+    /*
+        Function for only filling the partner's loc's list from user
+     */
     public void fillPartnerLocFromUser() {
         nameOfPartnerLocs.removeAll( nameOfPartnerLocs );
         final Locations partnerLocs = app.manager.fetchPartnerLocations();
@@ -679,8 +692,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 mPartnerLocAdapter.notifyDataSetChanged();
             }
         }, 1000);
-    }
 
+        //TODO: Also fill the Tones' choices' list
+
+    }
+    /*
+        Function for only filling the log's list from user
+     */
     public void fillLogFromUser() {
         nameOfLogList.removeAll( nameOfLogList );
         final Logs partnerLog = app.manager.fetchPartnerHistory();
@@ -698,10 +716,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 mLogAdapter.notifyDataSetChanged();
                 //mLogAdapter.notifyDataSetChanged();
             }}, 1000);
-
-        //TODO: Also fill the Tones setting list
-
-
     }
 
     /*
@@ -980,10 +994,54 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 convertView = inflater.inflate(layout, parent, false);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
+                viewHolder.soundList = (Spinner) convertView.findViewById(R.id.sound_list);
+                // TODO: Get the default selection of the soundTone of this position from user
+                // Location name is at index "position"
+                // call like soundList.setSeletion(partnerArray.at(position).soundSelected)
+
+                viewHolder.vibrationList = (Spinner) convertView.findViewById(R.id.vibration_list);
+                // TODO: Get the default selection of the vibrationTone of this position from user
+                // Location name is at index "position"
+                // call like vibrationList.setSeletion(partnerArray.at(position).vibrationSelected)
+
                 convertView.setTag(viewHolder);
             }
 
             mainViewHolder = (ViewHolder) convertView.getTag();
+
+            //Select a sound tone
+            mainViewHolder.soundList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                    // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
+                    // TODO: Update the user's choice of sound tone to both local and server, choice index is "pos"
+                    Log.d("Sound drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Another interface callback, no need to modify
+                }
+
+            });
+
+            //Select a vibration tone
+            mainViewHolder.vibrationList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                    // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
+                    // TODO: Update the user's choice of vibration tone to both local and server, choice index is "pos"
+                    Log.d("Vib drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
+
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Another interface callback, no need to modify
+                }
+
+            });
+
             mainViewHolder.title.setText(getItem(position));
 
             return convertView;
@@ -991,6 +1049,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         protected class ViewHolder {
             TextView title;
+            Spinner soundList;
+            Spinner vibrationList;
         }
     }
 }
