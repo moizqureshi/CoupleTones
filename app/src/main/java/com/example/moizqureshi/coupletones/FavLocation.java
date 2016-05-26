@@ -31,11 +31,16 @@ public class FavLocation {
         snd = Integer.parseInt( fullString.substring( fullString.indexOf('%') + 2) );
 
         location = new LatLng( lat, lng );
+
+        vibeIdx = vib;
+        soundIdx = snd;
     }
 
     public FavLocation( String newName, LatLng newLocation ) {
         name = newName;
         location = newLocation;
+        vibeIdx = 0;
+        soundIdx = 0;
     }
 
     public LatLng getLocation( ) {
