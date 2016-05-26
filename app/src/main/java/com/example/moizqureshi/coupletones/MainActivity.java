@@ -995,15 +995,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 convertView = inflater.inflate(layout, parent, false);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
                 viewHolder.soundList = (Spinner) convertView.findViewById(R.id.sound_list);
-                // TODO: Set the default in the U.I.
                 int soundIdx = app.partnerLocs.get( position ).getSoundIdx();
-                //ViewHolder.soundList.setSeletion(soundIdx);
+                viewHolder.soundList.setSelection(soundIdx);
 
                 viewHolder.vibrationList = (Spinner) convertView.findViewById(R.id.vibration_list);
                 int vibeIdx = app.partnerLocs.get( position ).getVibeIdx();
-                // TODO: Set the default in the U.I.
-                // Location name is at index "position"
-                // call like vibrationList.setSeletion(partnerArray.at(position).vibrationSelected)
+                viewHolder.vibrationList.setSelection( vibeIdx );
 
                 convertView.setTag(viewHolder);
             }
@@ -1054,6 +1051,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             TextView title;
             Spinner soundList;
             Spinner vibrationList;
+
         }
     }
 }
