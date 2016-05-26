@@ -990,7 +990,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder mainViewHolder = null;
             ViewHolder viewHolder = new ViewHolder();
-            if (convertView == null) {
+            //if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 convertView = inflater.inflate(layout, parent, false);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
@@ -1003,7 +1003,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 viewHolder.vibrationList.setSelection( vibeIdx );
 
                 convertView.setTag(viewHolder);
-            }
+            //}
 
             mainViewHolder = (ViewHolder) convertView.getTag();
 
