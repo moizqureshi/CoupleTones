@@ -299,7 +299,7 @@ public class DataManager {
         msg = "Your partner is at " + locationName;
 
         try{
-            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher'}");
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space1', 'large_icon':'ic_launcher'}");
             Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
             OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
                 @Override
