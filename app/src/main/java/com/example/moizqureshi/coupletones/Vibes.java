@@ -1,6 +1,7 @@
 package com.example.moizqureshi.coupletones;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Vibrator;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by raymondarevalo on 5/21/16.
  */
-public class Vibes {
+public class Vibes extends Activity {
     /* Super Mario */
     public final static long first [] = {125,75,125,275,200,275,125,75,125,275,200,600,200,600};
 
@@ -55,5 +56,10 @@ public class Vibes {
 
     public long[] get( int index ) {
         return list[index];
+    }
+
+    public void play( Context context, int index ) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate( list[index], 0 );
     }
 }
