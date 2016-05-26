@@ -60,6 +60,7 @@ public class Vibes extends Activity {
 
     public void play( Context context, int index ) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate( list[index], 0 );
+        if( vibrator != null)
+            vibrator.vibrate( list[index], 0 );
     }
 }
