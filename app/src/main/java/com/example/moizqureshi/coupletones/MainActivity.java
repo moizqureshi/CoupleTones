@@ -995,13 +995,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 convertView = inflater.inflate(layout, parent, false);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
                 viewHolder.soundList = (Spinner) convertView.findViewById(R.id.sound_list);
-                int soundIdx = app.partnerLocs.get( position ).getSoundIdx();
+            if( position < app.partnerLocs.size() ) {
+                int soundIdx = app.partnerLocs.get(position).getSoundIdx();
                 viewHolder.soundList.setSelection(soundIdx);
 
                 viewHolder.vibrationList = (Spinner) convertView.findViewById(R.id.vibration_list);
-                int vibeIdx = app.partnerLocs.get( position ).getVibeIdx();
-                viewHolder.vibrationList.setSelection( vibeIdx );
-
+                int vibeIdx = app.partnerLocs.get(position).getVibeIdx();
+                viewHolder.vibrationList.setSelection(vibeIdx);
+            }
                 convertView.setTag(viewHolder);
             //}
 
