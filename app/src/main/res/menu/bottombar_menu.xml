@@ -11,4 +11,12 @@
         android:id="@+id/bottomBarItemThree"
         android:icon="@drawable/ic_favorites"
         android:title="Favorites" />
+    <item
+        android:id="@+id/bottomBarItemFour"
+        android:icon="@drawable/ic_partners"
+        android:title="Tones" />
+    <item
+        android:id="@+id/bottomBarItemFive"
+        android:icon="@drawable/ic_log"
+        android:title="Log" />
 </menu>
