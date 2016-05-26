@@ -290,10 +290,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else if (menuItemId == R.id.bottomBarItemFour) {
                     // The user selected item number three.
-                    fillPartnerLocFromUser();
+                    if( !app.currUser.getPartnerEmail().equals("--") )
+                        fillPartnerLocFromUser();
                     //line below is just for testing the drop down lists
                     //nameOfPartnerLocs.add("sound");
-                    mPartnerLocAdapter.notifyDataSetChanged();
+                    //mPartnerLocAdapter.notifyDataSetChanged();
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
                     mDeletePartner.setVisibility(View.GONE);
@@ -308,7 +309,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else if (menuItemId == R.id.bottomBarItemFive) {
                     // The user selected item number three.
-                    fillLogFromUser();
+                    if( !app.currUser.getPartnerEmail().equals("--") )
+                        fillLogFromUser();
                     //mLogAdapter.notifyDataSetChanged();
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
@@ -426,7 +428,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 currPlace.setOutTime(Calendar.getInstance());
                                 app.manager.updateHistory( app.currUser );
                             }
-                            // todo left set the out time.
                             locName = "--";
                         }
                     }
@@ -655,7 +656,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 //mLogAdapter.notifyDataSetChanged();
             }}, 2000);
 
-        //TODO: Also fill the Tones' choices' list
 
         final Locations partnerLocs = app.manager.fetchPartnerLocations();
 
@@ -678,7 +678,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void fillPartnerLocFromUser() {
         nameOfPartnerLocs.removeAll( nameOfPartnerLocs );
-        final Locations partnerLocs = app.manager.fetchPartnerLocations();
+        app.partnerLocs = app.manager.fetchPartnerLocations();
+        final Locations partnerLocs = app.partnerLocs;//app.manager.fetchPartnerLocations();
 
         Handler hd2 = new Handler();
         hd2.postDelayed( new Runnable() {
@@ -693,7 +694,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, 1000);
 
-        //TODO: Also fill the Tones' choices' list
 
     }
     /*
@@ -995,14 +995,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 convertView = inflater.inflate(layout, parent, false);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
                 viewHolder.soundList = (Spinner) convertView.findViewById(R.id.sound_list);
-                // TODO: Get the default selection of the soundTone of this position from user
-                // Location name is at index "position"
-                // call like soundList.setSeletion(partnerArray.at(position).soundSelected)
+                int soundIdx = app.partnerLocs.get( position ).getSoundIdx();
+                viewHolder.soundList.setSelection(soundIdx);
 
                 viewHolder.vibrationList = (Spinner) convertView.findViewById(R.id.vibration_list);
-                // TODO: Get the default selection of the vibrationTone of this position from user
-                // Location name is at index "position"
-                // call like vibrationList.setSeletion(partnerArray.at(position).vibrationSelected)
+                int vibeIdx = app.partnerLocs.get( position ).getVibeIdx();
+                viewHolder.vibrationList.setSelection( vibeIdx );
 
                 convertView.setTag(viewHolder);
             }
@@ -1015,7 +1013,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
-                    // TODO: Update the user's choice of sound tone to both local and server, choice index is "pos"
+                    app.partnerLocs.get( position ).setSoundIdx( pos );
+                    app.manager.updateLocations( app.currUser.getPartnerEmail(), app.partnerLocs );
                     Log.d("Sound drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
                 }
 
@@ -1031,7 +1030,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
-                    // TODO: Update the user's choice of vibration tone to both local and server, choice index is "pos"
+                    app.partnerLocs.get( position ).setVibeIdx( pos );
+                    app.manager.updateLocations( app.currUser.getPartnerEmail(), app.partnerLocs );
                     Log.d("Vib drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
 
                 }
@@ -1051,6 +1051,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             TextView title;
             Spinner soundList;
             Spinner vibrationList;
+
         }
     }
 }

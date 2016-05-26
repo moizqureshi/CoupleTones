@@ -32,6 +32,7 @@ public class ourApplication extends Application {
     OptionalPendingResult<GoogleSignInResult> opr;
     GoogleApiClient mGoogleApiClient;
     GoogleSignInAccount acct;
+    Locations partnerLocs;
 
     DataManager manager;
     User currUser;
