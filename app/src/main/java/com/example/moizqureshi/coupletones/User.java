@@ -11,9 +11,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class User {
     private String email;
+    private String singalId;
     private String partnerEmail;
     private String partnerId;
     private Locations locations;
+    private Logs userHistory;
+
     private boolean hasPartner;
 
     public User( ) {
@@ -21,6 +24,7 @@ public class User {
         partnerEmail = new String("--");
         partnerId = null;
         locations = new Locations( );
+        userHistory = new Logs( );
         hasPartner = false;
     }
 
@@ -28,6 +32,7 @@ public class User {
         email = newAccount.getEmail();
         partnerEmail = new String("--");
         locations = new Locations( );
+        userHistory = new Logs( );
 
     }
 
@@ -35,12 +40,16 @@ public class User {
         this.email = email;
         this.partnerEmail = partnerEmail;
         this.locations = locations;
-
+        this.userHistory = new Logs();
         partnerId = null;
     }
 
     public String getEmail( ) {
         return email;
+    }
+
+    public String getSingalId() {
+        return singalId;
     }
 
     public String getPartnerEmail( ) {
@@ -53,6 +62,14 @@ public class User {
 
     public Locations getLocations( ) {
         return locations;
+    }
+
+    public Logs getHistory() {
+        return userHistory;
+    }
+
+    public void setSingalId(String id) {
+        singalId = id;
     }
 
     public void setPartnerEmail( String newPartnerEmail ) {
