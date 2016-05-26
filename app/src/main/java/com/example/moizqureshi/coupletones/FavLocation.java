@@ -10,6 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
 public class FavLocation {
     private String name;
     private LatLng location;
+    private int vibeIdx;
+    private int soundIdx;
 
     public FavLocation( String fullString ) {
         name = fullString.substring( 0, fullString.indexOf('*') - 1 );
@@ -17,10 +19,16 @@ public class FavLocation {
 
         double lat;
         double lng;
+        int vib;
+        int snd;
 
         lat = Double.parseDouble( fullString.substring(0, fullString.indexOf('*') - 1) );
 
-        lng = Double.parseDouble( fullString.substring( fullString.indexOf('*') + 2 ) );
+        lng = Double.parseDouble( fullString.substring( fullString.indexOf('*') + 2, fullString.indexOf('&') - 1 ) );
+
+        vib = Integer.parseInt( fullString.substring( fullString.indexOf('&') + 2, fullString.indexOf('%') -1 ) );
+
+        snd = Integer.parseInt( fullString.substring( fullString.indexOf('%') + 2) );
 
         location = new LatLng( lat, lng );
     }
@@ -56,5 +64,29 @@ public class FavLocation {
 
     private String latitude( ) {
         return " * " + location.latitude;
+    }
+
+    private String vibe() {
+        return " & " + vibeIdx;
+    }
+
+    private String sound() {
+        return " % " + soundIdx;
+    }
+
+    public int getVibeIdx( ) {
+        return vibeIdx;
+    }
+
+    public int getSoundIdx( ) {
+        return soundIdx;
+    }
+
+    public void setVibeIdx( int idx ) {
+        vibeIdx = idx;
+    }
+
+    public void setSoundIdx( int idx ) {
+        soundIdx = idx;
     }
 }

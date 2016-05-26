@@ -1,6 +1,7 @@
 package com.example.moizqureshi.coupletones;
 
 import android.app.Application;
+import android.location.Location;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -244,6 +245,27 @@ public class DataManager {
                 }
             }
         });
+    }
+    public void updateLocations(String user, Locations locations ) {
+        try {
+            final JSONArray newLocations = locations.getList();
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
+            query.whereEqualTo("email", user );
+            query.getFirstInBackground(new GetCallback<ParseObject>() {
+                public void done(ParseObject object, ParseException e) {
+                    if (object == null) { //There isn't a user
+
+                    } else {
+                        object.put("locationsList", newLocations  );
+
+                        object.saveInBackground();
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void updateLocations(User newUser, final JSONArray newLocations ) {
