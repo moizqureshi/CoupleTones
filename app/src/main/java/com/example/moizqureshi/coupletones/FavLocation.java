@@ -60,7 +60,7 @@ public class FavLocation {
     }
 
     public String toString( ) {
-        return name + latitude() + longtitude();
+        return name + latitude() + longtitude() + vibe() + sound();
     }
 
     private String longtitude( ) {
