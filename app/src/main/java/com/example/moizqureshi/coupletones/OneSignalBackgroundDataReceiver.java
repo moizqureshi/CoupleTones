@@ -12,8 +12,6 @@ import org.json.JSONObject;
  * Created by moizqureshi on 5/25/16.
  */
 
-
-
 public class OneSignalBackgroundDataReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle dataBundle = intent.getBundleExtra("data");
