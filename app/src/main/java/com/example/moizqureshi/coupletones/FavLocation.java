@@ -42,7 +42,7 @@ public class FavLocation {
         secondInt = Integer.parseInt( fullString.substring( fullString.indexOf(']') + 2) );
 
         soundIdx[0] = firstInt;
-        soundIdx[0] = secondInt;
+        soundIdx[1] = secondInt;
     }
 
     public FavLocation( String newName, LatLng newLocation ) {
