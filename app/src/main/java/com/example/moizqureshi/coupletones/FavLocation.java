@@ -8,10 +8,13 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Alina on 5/3/2016.
  */
 public class FavLocation {
+    static final int ARRIVE_INDEX = 0;
+    static final int LEAVE_INDEX = 1;
+
     private String name;
     private LatLng location;
-    private int vibeIdx;
-    private int soundIdx;
+    private int vibeIdx[] = new int[2];
+    private int soundIdx[] = new int[2];
 
     public FavLocation( String fullString ) {
         name = fullString.substring( 0, fullString.indexOf('*') - 1 );
@@ -19,28 +22,30 @@ public class FavLocation {
 
         double lat;
         double lng;
-        int vib;
-        int snd;
+        int firstInt;
+        int secondInt;
 
         lat = Double.parseDouble( fullString.substring(0, fullString.indexOf('*') - 1) );
 
         lng = Double.parseDouble( fullString.substring( fullString.indexOf('*') + 2, fullString.indexOf('&') - 1 ) );
 
-        vib = Integer.parseInt( fullString.substring( fullString.indexOf('&') + 2, fullString.indexOf('%') -1 ) );
+        firstInt = Integer.parseInt( fullString.substring( fullString.indexOf('&') + 2, fullString.indexOf('[') - 1 ) );
 
         snd = Integer.parseInt( fullString.substring( fullString.indexOf('%') + 2) );
 
         location = new LatLng( lat, lng );
 
-        vibeIdx = vib;
-        soundIdx = snd;
+        vibeIdx[0] = vib;
+        soundIdx[0] = snd;
     }
 
     public FavLocation( String newName, LatLng newLocation ) {
         name = newName;
         location = newLocation;
-        vibeIdx = 0;
-        soundIdx = 0;
+        vibeIdx[0] = 0;
+        vibeIdx[1] = 0;
+        soundIdx[0] = 0;
+        soundIdx[1] = 0;
     }
 
     public LatLng getLocation( ) {
@@ -72,26 +77,26 @@ public class FavLocation {
     }
 
     private String vibe() {
-        return " & " + vibeIdx;
+        return " & " + vibeIdx[0] + " [ " + vibeIdx[1];
     }
 
     private String sound() {
-        return " % " + soundIdx;
+        return " % " + soundIdx[0] + " ] " + soundIdx[1];
     }
 
-    public int getVibeIdx( ) {
-        return vibeIdx;
+    public int getVibeIdx(int index) {
+        return vibeIdx[index];
     }
 
-    public int getSoundIdx( ) {
-        return soundIdx;
+    public int getSoundIdx(int index) {
+        return soundIdx[index];
     }
 
-    public void setVibeIdx( int idx ) {
-        vibeIdx = idx;
+    public void setVibeIdx(int index, int idx ) {
+        vibeIdx[index] = idx;
     }
 
-    public void setSoundIdx( int idx ) {
-        soundIdx = idx;
+    public void setSoundIdx(int index, int idx ) {
+        soundIdx[index] = idx;
     }
 }
