@@ -22,13 +22,24 @@ public class OneSignalBackgroundDataReceiver extends WakefulBroadcastReceiver {
         try {
             JSONObject customJSON = new JSONObject(dataBundle.getString("custom"));
             if (customJSON.has("a")) {
-                soundIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("sound"));
-                Log.i("SoundIdx", customJSON.getJSONObject("a").getString("sound"));
-                sound.setPlayer(soundIdx);
-                sound.playSound();
+                if(customJSON.getJSONObject("a").has("pairRequest")) {
+                    Log.i("pairRequest", customJSON.getJSONObject("a").getString("pairRequest"));
+                }
 
-                vibeIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("vibe"));
-                Log.i("VIbeIdx", customJSON.getJSONObject("a").getString("vibe"));
+                if(customJSON.getJSONObject("a").has("sound")) {
+                    Log.i("SoundIdx", customJSON.getJSONObject("a").getString("sound"));
+                    soundIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("sound"));
+                    sound.setPlayer(soundIdx);
+                    sound.playSound();
+                }
+
+                if(customJSON.getJSONObject("a").has("vibe")) {
+                    Log.i("VIbeIdx", customJSON.getJSONObject("a").getString("vibe"));
+                    vibeIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("vibe"));
+                }
+
+
+
             }
         } catch (Throwable t) {
             t.printStackTrace();

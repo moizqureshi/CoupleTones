@@ -430,6 +430,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             if( currPlace != null ) {
                                 currPlace.setOutTime(Calendar.getInstance());
                                 app.manager.updateHistory( app.currUser );
+                                app.manager.fetchPartnerId(app.manager.getPartnerEmail());
+                                final int constIdx = i;
+                                final Handler handlerP = new Handler();
+
+                                handlerP.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        app.manager.sendBackgroundMessage( app.currUser.getLocations().get(constIdx).getSoundIdx( FavLocation.LEAVE_INDEX),
+                                                app.currUser.getLocations().get(constIdx).getVibeIdx( FavLocation.LEAVE_INDEX));
+                                        app.manager.sendDepartMessage(app.currUser.getLocations().get(constIdx).getName());
+                                        //app.manager.updateHistory( app.currUser );
+                                        //app.manager.refreshHistory( app.currUser );
+                                    }
+                                }, 2000);
                             }
                             locName = "--";
                         }
@@ -442,12 +456,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             app.manager.fetchPartnerId(app.manager.getPartnerEmail());
                             final String name = app.currUser.getLocations().get(i).getName();
                             app.currUser.getHistory().add( new LocHist( name, Calendar.getInstance() ) );
+                            final int constI = i;
                             final Handler handlerP = new Handler();
 
                             handlerP.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    app.manager.sendMessage(name);
+                                    app.manager.sendBackgroundMessage( app.currUser.getLocations().get(constI).getSoundIdx( FavLocation.ARRIVE_INDEX),
+                                                                        app.currUser.getLocations().get(constI).getVibeIdx( FavLocation.ARRIVE_INDEX));
+                                    app.manager.sendArriveMessage(name);
                                     //app.manager.updateHistory( app.currUser );
                                     app.manager.refreshHistory( app.currUser );
                                 }
