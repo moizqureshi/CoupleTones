@@ -15,18 +15,21 @@ import org.json.JSONObject;
 public class OneSignalBackgroundDataReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle dataBundle = intent.getBundleExtra("data");
+        Sounds sound = new Sounds(context);
+        int soundIdx;
+        int vibeIdx;
 
         try {
-//            Log.i("OneSignalExample", "NotificationTable content: " + dataBundle.getString("alert"));
-//            Log.i("OneSignalExample", "NotificationTable title: " + dataBundle.getString("title"));
-//            Log.i("OneSignalExample", "Is Your App Active: " + dataBundle.getBoolean("isActive"));
-//            Log.i("OneSignalExample", "data addt: " + dataBundle.getString("custom"));
-            int soundIdx = dataBundle.getInt("sound");
-            int vibeIdx = dataBundle.getInt("vibe");
-            Sounds sound = new Sounds(context);
-            sound.setPlayer(soundIdx);
-            sound.playSound();
+            JSONObject customJSON = new JSONObject(dataBundle.getString("custom"));
+            if (customJSON.has("a")) {
+                soundIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("sound"));
+                Log.i("SoundIdx", customJSON.getJSONObject("a").getString("sound"));
+                sound.setPlayer(soundIdx);
+                sound.playSound();
 
+                vibeIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("vibe"));
+                Log.i("VIbeIdx", customJSON.getJSONObject("a").getString("vibe"));
+            }
         } catch (Throwable t) {
             t.printStackTrace();
         }
