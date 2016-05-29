@@ -38,7 +38,7 @@ public class FavLocation {
         vibeIdx[0] = firstInt;
         vibeIdx[1] = secondInt;
 
-        firstInt = Integer.parseInt( fullString.substring( fullString.indexOf('&') + 2, fullString.indexOf(']') -1 ) );
+        firstInt = Integer.parseInt( fullString.substring( fullString.indexOf('%') + 2, fullString.indexOf(']') -1 ) );
         secondInt = Integer.parseInt( fullString.substring( fullString.indexOf(']') + 2) );
 
         soundIdx[0] = firstInt;
