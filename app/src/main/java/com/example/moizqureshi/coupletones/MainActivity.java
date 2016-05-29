@@ -996,11 +996,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
                 viewHolder.soundList = (Spinner) convertView.findViewById(R.id.sound_list);
             if( position < app.partnerLocs.size() ) {
-                int soundIdx = app.partnerLocs.get(position).getSoundIdx();
+                int soundIdx = app.partnerLocs.get(position).getSoundIdx( FavLocation.ARRIVE_INDEX );
                 viewHolder.soundList.setSelection(soundIdx);
 
                 viewHolder.vibrationList = (Spinner) convertView.findViewById(R.id.vibration_list);
-                int vibeIdx = app.partnerLocs.get(position).getVibeIdx();
+                int vibeIdx = app.partnerLocs.get(position).getVibeIdx( FavLocation.ARRIVE_INDEX );
                 viewHolder.vibrationList.setSelection(vibeIdx);
             }
                 convertView.setTag(viewHolder);
@@ -1014,7 +1014,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
-                    app.partnerLocs.get( position ).setSoundIdx( pos );
+                    app.partnerLocs.get( position ).setSoundIdx( FavLocation.ARRIVE_INDEX, pos );
                     app.manager.updateLocations( app.currUser.getPartnerEmail(), app.partnerLocs );
                     Log.d("Sound drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
                 }
@@ -1031,7 +1031,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
-                    app.partnerLocs.get( position ).setVibeIdx( pos );
+                    app.partnerLocs.get( position ).setVibeIdx( FavLocation.ARRIVE_INDEX, pos );
                     app.manager.updateLocations( app.currUser.getPartnerEmail(), app.partnerLocs );
                     Log.d("Vib drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
 

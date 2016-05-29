@@ -31,12 +31,18 @@ public class FavLocation {
 
         firstInt = Integer.parseInt( fullString.substring( fullString.indexOf('&') + 2, fullString.indexOf('[') - 1 ) );
 
-        snd = Integer.parseInt( fullString.substring( fullString.indexOf('%') + 2) );
+        secondInt = Integer.parseInt( fullString.substring( fullString.indexOf('[') + 2, fullString.indexOf('%') - 1) );
 
         location = new LatLng( lat, lng );
 
-        vibeIdx[0] = vib;
-        soundIdx[0] = snd;
+        vibeIdx[0] = firstInt;
+        vibeIdx[1] = secondInt;
+
+        firstInt = Integer.parseInt( fullString.substring( fullString.indexOf('&') + 2, fullString.indexOf(']') -1 ) );
+        secondInt = Integer.parseInt( fullString.substring( fullString.indexOf(']') + 2) );
+
+        soundIdx[0] = firstInt;
+        soundIdx[0] = secondInt;
     }
 
     public FavLocation( String newName, LatLng newLocation ) {
