@@ -372,13 +372,18 @@ public class DataManager {
     public void sendBackgroundMessage(int soundIdx, int vibeIdx) {
         JSONObject pushJSON = new JSONObject();
         try{
-            pushJSON.put("include_player_ids", partnerId);
+            JSONArray partnerIdArr = new JSONArray();
+            partnerIdArr.put(partnerId);
+            pushJSON.put("include_player_ids", partnerIdArr);
             pushJSON.put("android_background_data", true);
 
             JSONObject data = new JSONObject();
             data.put("sound", soundIdx);
             data.put("vibe", vibeIdx);
             pushJSON.putOpt("data", data);
+
+            Log.i("SoundIdx", Integer.toString(soundIdx));
+            Log.i("VibeIdx", Integer.toString(soundIdx));
 
             OneSignal.postNotification(pushJSON, new OneSignal.PostNotificationResponseHandler() {
                 @Override
