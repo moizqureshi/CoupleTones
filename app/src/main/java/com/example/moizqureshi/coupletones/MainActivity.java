@@ -197,6 +197,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Sounds sounds = new Sounds(getApplicationContext());
+//                sounds.setPlayer(1,5);
+//                sounds.playSounds();
                 signOut();
             }
         });

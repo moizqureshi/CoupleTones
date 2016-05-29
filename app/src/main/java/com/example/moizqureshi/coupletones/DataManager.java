@@ -314,14 +314,15 @@ public class DataManager {
     }
 
     public void sendMessage(String locationName) {
-        Log.d("MSG", "PartnerId is " + partnerId);
+
+        sendBackgroundMessage(1,2);
 
         JSONObject pushJSON = new JSONObject();
         String msg;
         msg = "Your partner is at " + locationName;
 
         try{
-            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'android_sound':'space_push', 'large_icon':'ic_launcher'}");
+            JSONObject pushJson = new JSONObject("{'contents': {'en':'" + msg + "'}, 'include_player_ids': ['" + partnerId + "'], 'large_icon':'ic_launcher'}");
             Log.d("Test", "testJson is:" + '\n' + pushJson.toString());
             OneSignal.postNotification(pushJson, new OneSignal.PostNotificationResponseHandler() {
                 @Override
@@ -335,6 +336,33 @@ public class DataManager {
                 }
             });
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendBackgroundMessage(int soundIdx, int vibeIdx) {
+        JSONObject pushJSON = new JSONObject();
+        try{
+            pushJSON.put("include_player_ids", partnerId);
+            pushJSON.put("android_background_data", true);
+
+            JSONObject data = new JSONObject();
+            data.put("sound", soundIdx);
+            data.put("vibe", vibeIdx);
+            pushJSON.putOpt("data", data);
+
+            OneSignal.postNotification(pushJSON, new OneSignal.PostNotificationResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i("OneSignal", "postNotificationBG Success: " + response.toString());
+                }
+
+                @Override
+                public void onFailure(JSONObject response) {
+                    Log.e("OneSignal", "postNotificationBG Failure: " + response.toString());
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }

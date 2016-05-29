@@ -2,6 +2,7 @@ package com.example.moizqureshi.coupletones;
 
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.maps.MapFragment;
+import com.onesignal.NotificationExtenderService;
+import com.onesignal.OSNotificationPayload;
 import com.onesignal.OneSignal;
 import com.parse.Parse;
 import android.widget.TextView;
@@ -54,6 +57,8 @@ public class ourApplication extends Application {
                 .init();
         OneSignal.enableInAppAlertNotification(true);
         OneSignal.enableNotificationsWhenActive(false);
+        OneSignal.enableSound(false);
+        OneSignal.enableVibrate(false);
 
     }
 
@@ -70,6 +75,7 @@ public class ourApplication extends Application {
         @Override
         public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
             String additionalMessage = "";
+
             try {
                 if (additionalData != null) {
                     Log.d("Notification from: ", additionalData.getString("fromID"));
@@ -99,8 +105,8 @@ public class ourApplication extends Application {
                     }
 
                     additionalMessage = message + "\nFull additionalData:\n" + additionalData.toString();
-                }
 
+                }
                 Log.d("OneSignalExample", "message:\n" + message + "\nadditionalMessage:\n" + additionalMessage);
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -108,3 +114,4 @@ public class ourApplication extends Application {
         }
     }
 }
+

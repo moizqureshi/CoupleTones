@@ -18,6 +18,7 @@
 
 
 
+
     <application
         android:name=".ourApplication"
         android:allowBackup="true"
@@ -26,6 +27,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
+        <receiver
+            android:name=".OneSignalBackgroundDataReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.onesignal.BackgroundBroadcast.RECEIVE" />
+            </intent-filter>
+        </receiver>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
