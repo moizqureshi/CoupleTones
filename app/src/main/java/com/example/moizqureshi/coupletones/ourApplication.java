@@ -17,8 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.maps.MapFragment;
-import com.onesignal.NotificationExtenderService;
-import com.onesignal.OSNotificationPayload;
+//import com.onesignal.NotificationExtenderService;
+//import com.onesignal.OSNotificationPayload;
 import com.onesignal.OneSignal;
 import com.parse.Parse;
 import android.widget.TextView;
@@ -56,7 +56,7 @@ public class ourApplication extends Application {
                 .setNotificationOpenedHandler(new ExampleNotificationOpenedHandler())
                 .init();
         OneSignal.enableInAppAlertNotification(true);
-        OneSignal.enableNotificationsWhenActive(false);
+        OneSignal.enableNotificationsWhenActive(true);
         OneSignal.enableSound(false);
         OneSignal.enableVibrate(false);
 
