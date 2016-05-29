@@ -994,29 +994,37 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 convertView = inflater.inflate(layout, parent, false);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.partnerLoc_item_text);
+
                 viewHolder.soundList = (Spinner) convertView.findViewById(R.id.sound_list);
-            if( position < app.partnerLocs.size() ) {
-                int soundIdx = app.partnerLocs.get(position).getSoundIdx( FavLocation.ARRIVE_INDEX );
+                int soundIdx = app.partnerLocs.get(position).getSoundIdx(0);
                 viewHolder.soundList.setSelection(soundIdx);
 
+                viewHolder.soundList2 = (Spinner) convertView.findViewById(R.id.sound_list2);
+                int soundIdx2 = app.partnerLocs.get(position).getSoundIdx(1);
+                viewHolder.soundList2.setSelection(soundIdx2);
+
                 viewHolder.vibrationList = (Spinner) convertView.findViewById(R.id.vibration_list);
-                int vibeIdx = app.partnerLocs.get(position).getVibeIdx( FavLocation.ARRIVE_INDEX );
+                int vibeIdx = app.partnerLocs.get(position).getVibeIdx(0);
                 viewHolder.vibrationList.setSelection(vibeIdx);
-            }
+
+                viewHolder.vibrationList2 = (Spinner) convertView.findViewById(R.id.vibration_list2);
+                int vibeIdx2 = app.partnerLocs.get(position).getVibeIdx(1);
+                viewHolder.vibrationList2.setSelection(vibeIdx2);
+
                 convertView.setTag(viewHolder);
             //}
 
             mainViewHolder = (ViewHolder) convertView.getTag();
 
-            //Select a sound tone
+            //Select arrive sound tone
             mainViewHolder.soundList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
-                    app.partnerLocs.get( position ).setSoundIdx( FavLocation.ARRIVE_INDEX, pos );
-                    app.manager.updateLocations( app.currUser.getPartnerEmail(), app.partnerLocs );
-                    Log.d("Sound drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
+                    app.partnerLocs.get(position).setSoundIdx(0, pos);
+                    app.manager.updateLocations(app.currUser.getPartnerEmail(), app.partnerLocs);
+                    Log.d("Sound drop down list", " Selected " + parent.getItemAtPosition(pos) + " at position " + position);
                 }
 
                 public void onNothingSelected(AdapterView<?> parent) {
@@ -1025,15 +1033,50 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             });
 
-            //Select a vibration tone
+            //Select a leave sound tone
+            mainViewHolder.soundList2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                    // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
+                    app.partnerLocs.get(position).setSoundIdx(1, pos);
+                    app.manager.updateLocations(app.currUser.getPartnerEmail(), app.partnerLocs);
+                    Log.d("Sound drop down list", " Selected " + parent.getItemAtPosition(pos) + " at position " + position);
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Another interface callback, no need to modify
+                }
+
+            });
+
+            //Select arrive vibration tone
             mainViewHolder.vibrationList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view,
                                            int pos, long id) {
                     // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
-                    app.partnerLocs.get( position ).setVibeIdx( FavLocation.ARRIVE_INDEX, pos );
-                    app.manager.updateLocations( app.currUser.getPartnerEmail(), app.partnerLocs );
-                    Log.d("Vib drop down list", " Selected " + parent.getItemAtPosition(pos)+ " at position "+position);
+                    app.partnerLocs.get(position).setVibeIdx(0, pos);
+                    app.manager.updateLocations(app.currUser.getPartnerEmail(), app.partnerLocs);
+                    Log.d("Vib drop down list", " Selected " + parent.getItemAtPosition(pos) + " at position " + position);
+
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Another interface callback, no need to modify
+                }
+
+            });
+
+            //Select leave vibration tone
+            mainViewHolder.vibrationList2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view,
+                                           int pos, long id) {
+                    // An item was selected. Can retrieve the selected item using parent.getItemAtPosition(pos)
+                    app.partnerLocs.get(position).setVibeIdx(1, pos);
+                    app.manager.updateLocations(app.currUser.getPartnerEmail(), app.partnerLocs);
+                    Log.d("Vib drop down list", " Selected " + parent.getItemAtPosition(pos) + " at position " + position);
 
                 }
 
@@ -1052,7 +1095,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             TextView title;
             Spinner soundList;
             Spinner vibrationList;
+            Spinner soundList2;
+            Spinner vibrationList2;
 
         }
     }
 }
+

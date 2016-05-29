@@ -29,5 +29,23 @@
         android:layout_toLeftOf="@+id/sound_list"
         android:entries="@array/vibration_arrays" />
 
+    <Spinner
+        android:id="@+id/sound_list2"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_alignEnd="@+id/partnerLoc_item_text"
+        android:layout_below="@+id/sound_list"
+        android:layout_marginTop="10dp"
+        android:entries="@array/sound_arrays" />
+
+    <Spinner
+        android:id="@+id/vibration_list2"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/sound_list2"
+        android:layout_below="@+id/vibration_list"
+        android:entries="@array/vibration_arrays" />
+
 
 </RelativeLayout>
