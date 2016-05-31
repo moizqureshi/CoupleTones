@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Vibrator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -40,27 +41,29 @@ public class Vibes extends Activity {
     /* Muse - Madness */
     public final static long ten [] = {80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,320,160,320,160,320};
 
-    long list[][];
+    public ArrayList<long[]> list = new ArrayList<>(10); /* TODO changed */
 
-    Vibes() {
-        list[0] = first;
-        list[1] = second;
-        list[3] = third;
-        list[4] = fourth;
-        list[5] = fifth;
-        list[6] = sixth;
-        list[7] = seventh;
-        list[8] = nine;
-        list[9] = ten;
+    public Vibes() {    // TODO changed. Vibes() -> public Vibes()
+        list.add(0, first);
+        list.add(1, second);
+        list.add(2, third);
+        list.add(3, fourth);
+        list.add(4, fifth);
+        list.add(5, sixth);
+        list.add(6, seventh);
+        list.add(7, eight);
+        list.add(8, nine);
+        list.add(9, ten);
     }
 
     public long[] get( int index ) {
-        return list[index];
+        return list.get(index);
     }
 
-    public void play( Context context, int index ) {
-        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+    public long[] play( int index ) { /* TODO changed */
+        Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE); /* TODO Changed */
         if( vibrator != null)
-            vibrator.vibrate( list[index], 0 );
+            vibrator.vibrate( list.get(index), -1 ); /* Changed */
+        return list.get(index);
     }
 }
