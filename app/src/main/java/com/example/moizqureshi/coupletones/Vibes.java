@@ -60,8 +60,8 @@ public class Vibes extends Activity {
         return list.get(index);
     }
 
-    public long[] play( int index ) { /* TODO changed */
-        Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE); /* TODO Changed */
+    public long[] play( int index, Context context ) { /* TODO changed */
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if( vibrator != null)
             vibrator.vibrate( list.get(index), -1 ); /* Changed */
         return list.get(index);
