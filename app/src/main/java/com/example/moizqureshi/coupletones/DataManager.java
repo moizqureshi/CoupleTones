@@ -383,7 +383,7 @@ public class DataManager {
             pushJSON.putOpt("data", data);
 
             Log.i("SoundIdx", Integer.toString(soundIdx));
-            Log.i("VibeIdx", Integer.toString(soundIdx));
+            Log.i("VibeIdx", Integer.toString(vibeIdx));
 
             OneSignal.postNotification(pushJSON, new OneSignal.PostNotificationResponseHandler() {
                 @Override
@@ -475,6 +475,46 @@ public class DataManager {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getNewLocations( User ourUser ) {
+    /*
+        final Locations partnerLocations = new Locations();
+        ParseQuery< ParseObject > query = ParseQuery.getQuery("CoupleTones");
+        query.whereEqualTo("email", user.getPartnerEmail());
+        // Log.d("The email: ", user.getPartnerEmail());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if (object == null) {
+                    // Log.d("getPartnerHistory", "Could not find such user: " + user.getPartnerEmail());
+                } else {
+                    try {
+                        partnerLocations.update(object.getJSONArray("locationsList"));
+                        //Log.d("size: ", ""+partnerHistory.get().getInTime().get(Calendar.MONTH));
+                    } catch( JSONException e2 ) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        return partnerLocations; */
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
+        query.whereEqualTo("email", ourUser.getEmail());
+        try {
+            ParseObject object = query.getFirst();
+            ourUser.getLocations().update( object.getJSONArray("locationsList"));
+            //Log.d("2.index = ", ""+ourUser.getLocations().get(0).getSoundIdx(0));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Log.d("1.index = ", ""+ourUser.getLocations().get(0).getSoundIdx(0));
+        this.user = ourUser;
     }
 }
 
