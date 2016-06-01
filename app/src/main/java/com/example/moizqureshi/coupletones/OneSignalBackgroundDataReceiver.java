@@ -16,15 +16,14 @@ public class OneSignalBackgroundDataReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle dataBundle = intent.getBundleExtra("data");
         Sounds sound = new Sounds(context);
+        Vibes vibe = new Vibes();
+
         int soundIdx;
         int vibeIdx;
 
         try {
             JSONObject customJSON = new JSONObject(dataBundle.getString("custom"));
             if (customJSON.has("a")) {
-                if(customJSON.getJSONObject("a").has("pairRequest")) {
-                    Log.i("pairRequest", customJSON.getJSONObject("a").getString("pairRequest"));
-                }
 
                 if(customJSON.getJSONObject("a").has("sound")) {
                     Log.i("SoundIdx", customJSON.getJSONObject("a").getString("sound"));
@@ -36,6 +35,7 @@ public class OneSignalBackgroundDataReceiver extends WakefulBroadcastReceiver {
                 if(customJSON.getJSONObject("a").has("vibe")) {
                     Log.i("VIbeIdx", customJSON.getJSONObject("a").getString("vibe"));
                     vibeIdx = Integer.parseInt(customJSON.getJSONObject("a").getString("vibe"));
+                    vibe.play(vibeIdx, context);
                 }
 
 
