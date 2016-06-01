@@ -48,6 +48,7 @@ public class LocHist {
         secs = Integer.parseInt( fullLog.substring(0, fullLog.indexOf('-') -1 ) );
 
         inTime = Calendar.getInstance();
+        month--;
         inTime.set( 116, month, day, hours, mins, secs);
         //Log.d("mins after:", ""+inTime.get(Calendar.MONTH));
 
@@ -76,6 +77,7 @@ public class LocHist {
 
             secs = Integer.parseInt(fullLog);
             outTime = Calendar.getInstance();
+            month--;
             outTime.set(116, month, day, hours, mins, secs);
         }
     }
@@ -105,7 +107,7 @@ public class LocHist {
         hours = inTime.get(Calendar.HOUR);
         min = inTime.get(Calendar.MINUTE);
         sec = inTime.get( Calendar.SECOND);
-
+        month++;
         String fullLog =  name+" - in: "+month+"/"+day+" "+hours+":"+min+":"+sec+" - out: ";
 
 
@@ -117,6 +119,7 @@ public class LocHist {
             hours = outTime.get(Calendar.HOUR);
             min = outTime.get(Calendar.MINUTE);
             sec = outTime.get( Calendar.SECOND);
+            month++;
             fullLog += month+"/"+day+" "+hours+":"+min+":"+sec;
 
         }
