@@ -5,47 +5,82 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="100dp"
         android:text=" "
         android:id="@+id/partnerLoc_item_text"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="5dp"
-        android:textSize="28dp"
-        android:textStyle="bold"/>
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_alignParentStart="true" />
 
     <Spinner
         android:id="@+id/sound_list"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_alignEnd="@+id/partnerLoc_item_text"
-        android:layout_marginTop="10dp"
-        android:entries="@array/sound_arrays" />
+        android:layout_width="150dp"
+        android:layout_height="25dp"
+        android:entries="@array/sound_arrays"
+        android:layout_above="@+id/sound_list2"
+        android:layout_alignStart="@+id/textView" />
 
     <Spinner
         android:id="@+id/vibration_list"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/sound_list"
-        android:entries="@array/vibration_arrays" />
+        android:layout_width="150dp"
+        android:layout_height="25dp"
+        android:entries="@array/vibration_arrays"
+        android:layout_above="@+id/vibration_list2"
+        android:layout_alignEnd="@+id/partnerLoc_item_text" />
 
     <Spinner
         android:id="@+id/sound_list2"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_alignEnd="@+id/partnerLoc_item_text"
-        android:layout_below="@+id/sound_list"
-        android:layout_marginTop="10dp"
-        android:entries="@array/sound_arrays" />
+        android:layout_width="150dp"
+        android:layout_height="25dp"
+        android:entries="@array/sound_arrays"
+        android:layout_below="@+id/partnerLoc_item_text"
+        android:layout_toStartOf="@+id/vibration_list" />
 
     <Spinner
         android:id="@+id/vibration_list2"
-        android:layout_width="120dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/sound_list2"
-        android:layout_below="@+id/vibration_list"
-        android:entries="@array/vibration_arrays" />
+        android:layout_width="150dp"
+        android:layout_height="25dp"
+        android:entries="@array/vibration_arrays"
+        android:layout_below="@+id/partnerLoc_item_text"
+        android:layout_alignEnd="@+id/partnerLoc_item_text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Sound:"
+        android:id="@+id/textView"
+        android:layout_above="@+id/sound_list"
+        android:layout_alignStart="@+id/sound_list2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Vibration:"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/vibration_list"
+        android:layout_alignStart="@+id/vibration_list" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Arrive:"
+        android:id="@+id/textView3"
+        android:layout_above="@+id/sound_list2"
+        android:layout_toStartOf="@+id/sound_list" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Leave:"
+        android:id="@+id/textView4"
+        android:layout_alignBottom="@+id/sound_list2"
+        android:layout_toStartOf="@+id/sound_list2" />
 
 
 </RelativeLayout>
