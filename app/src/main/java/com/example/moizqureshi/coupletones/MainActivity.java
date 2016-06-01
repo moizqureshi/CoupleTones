@@ -239,6 +239,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMenuTabSelected(@IdRes int menuItemId) {
 
                 if (menuItemId == R.id.bottomBarItemTwo) {
+                    app.manager.refreshHistory( app.currUser );
+
                     // The user selected item number two.
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
@@ -253,6 +255,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     findViewById(R.id.map).setVisibility(View.VISIBLE);
                 }
                 else if (menuItemId == R.id.bottomBarItemOne) {
+                    app.manager.refreshHistory( app.currUser );
+
                     // The user selected item number one.
 
                     mSettingTitle.setVisibility(View.VISIBLE);
@@ -278,6 +282,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 }
                 else if (menuItemId == R.id.bottomBarItemThree) {
+                    app.manager.refreshHistory( app.currUser );
+
                     // The user selected item number three.
                     mSettingTitle.setVisibility(View.GONE);
                     mAddPartner.setVisibility(View.GONE);
@@ -292,6 +298,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     findViewById(R.id.map).setVisibility(View.GONE);
                 }
                 else if (menuItemId == R.id.bottomBarItemFour) {
+                    app.manager.refreshHistory( app.currUser );
+
                     // The user selected item number three.
                     if( !app.currUser.getPartnerEmail().equals("--") )
                         fillPartnerLocFromUser();
@@ -311,6 +319,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     findViewById(R.id.map).setVisibility(View.GONE);
                 }
                 else if (menuItemId == R.id.bottomBarItemFive) {
+                    app.manager.refreshHistory( app.currUser );
                     // The user selected item number three.
                     if( !app.currUser.getPartnerEmail().equals("--") )
                         fillLogFromUser();
@@ -468,7 +477,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                                         app.currUser.getLocations().get(constI).getVibeIdx( FavLocation.ARRIVE_INDEX));
                                     app.manager.sendArriveMessage(name);
                                     //app.manager.updateHistory( app.currUser );
-                                    app.manager.refreshHistory( app.currUser );
+                                    if( !app.manager.refreshHistory( app.currUser ))
+                                        app.manager.updateHistory( app.currUser );
                                 }
                             }, 2000);
                             locName = app.currUser.getLocations().get(i).getName();

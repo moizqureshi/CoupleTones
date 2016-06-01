@@ -159,27 +159,32 @@ public class DataManager {
      * YOU MUST call UpdateUser( ) after this call
      * @param newUser
      */
-    public void refreshHistory( User newUser ) {
+    public boolean refreshHistory( User newUser ) {
         user = newUser;
         //boolean parse = false;
         long fullDay = 24*3600*1000;
         long allSec = 0;
+
+        boolean refresh = false;
 
         while( true ) {
             if( user.getHistory().size() == 0)
                 break;
             allSec = user.getHistory().get().getInTime().getTimeInMillis();
 
-            if( (allSec + fullDay) <= allSec ) {
+            if( (allSec + fullDay) <= Calendar.getInstance().getTimeInMillis() ) {
                 user.getHistory().remove();
+                refresh = true;
                 //parse = true;
             } else {
                 break;
             }
         }
 
+        if( refresh )
         updateHistory( null );
 
+        return refresh;
 
     }
 
@@ -200,7 +205,7 @@ public class DataManager {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("CoupleTones");
         query.whereEqualTo("email", user.getEmail() );
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
+       /* query.getFirstInBackground(new GetCallback<ParseObject>() {
             public void done(ParseObject object, ParseException e) {
                 if (object == null) { //There isn't a user
 
@@ -214,7 +219,23 @@ public class DataManager {
                     object.saveInBackground();
                 }
             }
-        });
+        }); */
+        try {
+            ParseObject object = query.getFirst();
+            if( object == null ) {
+
+            }
+            else {
+                object.put("HistoryList", user.getHistory().getList() );
+                object.saveInBackground();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+
+
 
     }
 
