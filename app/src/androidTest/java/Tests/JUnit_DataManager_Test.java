@@ -96,7 +96,7 @@ public class JUnit_DataManager_Test extends AndroidTestCase{
 //        assertEquals("2", myUser.getPartnerEmail());
 //    }
 
-    @Test
+    /*@Test
     public void testUpdateLocations( ) throws JSONException {
         existUser.getLocations().add( new FavLocation( "loc", new LatLng(9, 9) ));
 
@@ -117,8 +117,6 @@ public class JUnit_DataManager_Test extends AndroidTestCase{
             }
         }, 1000);
 
-    }
-
-
+    }*/
 
 }
