@@ -12,6 +12,7 @@ public class Sounds {
 
     private Context context;
     public MediaPlayer mp1;
+    private int sd;
 
     private int[] sounds = { R.raw.birdy, R.raw.bottle, R.raw.elastic, R.raw.enigmatic, R.raw.ice,
             R.raw.mallet, R.raw.softbell, R.raw.spaceball, R.raw.toy, R.raw.wood, R.raw.space1, R.raw.space2 };
@@ -19,6 +20,11 @@ public class Sounds {
     public Sounds(Context context) {
         this.context = context;
         mp1 = new MediaPlayer();
+    }
+
+    public Sounds(int index)
+    {
+        sd = index;
     }
 
     public void setPlayer(int index) {
@@ -34,6 +40,11 @@ public class Sounds {
                 mp.stop();
             }
         });
+    }
+
+    public int getPlayer()
+    {
+        return sounds[ sd ];
     }
 
 
