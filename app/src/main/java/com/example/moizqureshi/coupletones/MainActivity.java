@@ -239,7 +239,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMenuTabSelected(@IdRes int menuItemId) {
 
                 if (menuItemId == R.id.bottomBarItemTwo) {
-                    app.manager.refreshHistory( app.currUser );
+                    //app.manager.refreshHistory( app.currUser );
 
                     // The user selected item number two.
                     mSettingTitle.setVisibility(View.GONE);
@@ -255,7 +255,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     findViewById(R.id.map).setVisibility(View.VISIBLE);
                 }
                 else if (menuItemId == R.id.bottomBarItemOne) {
-                    app.manager.refreshHistory( app.currUser );
+                    //app.manager.refreshHistory( app.currUser );
 
                     // The user selected item number one.
 
@@ -282,7 +282,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 }
                 else if (menuItemId == R.id.bottomBarItemThree) {
-                    app.manager.refreshHistory( app.currUser );
+                    //app.manager.refreshHistory( app.currUser );
 
                     // The user selected item number three.
                     mSettingTitle.setVisibility(View.GONE);
@@ -298,7 +298,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     findViewById(R.id.map).setVisibility(View.GONE);
                 }
                 else if (menuItemId == R.id.bottomBarItemFour) {
-                    app.manager.refreshHistory( app.currUser );
+                    //app.manager.refreshHistory( app.currUser );
 
                     // The user selected item number three.
                     if( !app.currUser.getPartnerEmail().equals("--") )
@@ -319,7 +319,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     findViewById(R.id.map).setVisibility(View.GONE);
                 }
                 else if (menuItemId == R.id.bottomBarItemFive) {
-                    app.manager.refreshHistory( app.currUser );
+                    //app.manager.refreshHistory( app.currUser );
                     // The user selected item number three.
                     if( !app.currUser.getPartnerEmail().equals("--") )
                         fillLogFromUser();
