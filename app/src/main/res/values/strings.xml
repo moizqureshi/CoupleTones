@@ -50,29 +50,29 @@
 
     <!-- String values for sound drop-down list -->
     <string-array name="sound_arrays">
-        <item>sound1</item>
-        <item>sound2</item>
-        <item>sound3</item>
-        <item>sound4</item>
-        <item>sound5</item>
-        <item>sound6</item>
-        <item>sound7</item>
-        <item>sound8</item>
-        <item>sound9</item>
-        <item>sound10</item>
+        <item>Birdy</item>
+        <item>Bottle</item>
+        <item>Elastic</item>
+        <item>Enigmatic</item>
+        <item>Ice</item>
+        <item>Mallet</item>
+        <item>Softbell</item>
+        <item>Spaceball</item>
+        <item>Toy</item>
+        <item>Wood</item>
     </string-array>
 
     <!-- String values for vibration drop-down list -->
     <string-array name="vibration_arrays">
-        <item>vibration1</item>
-        <item>vibration2</item>
-        <item>vibration3</item>
-        <item>vibration4</item>
-        <item>vibration5</item>
-        <item>vibration6</item>
-        <item>vibration7</item>
-        <item>vibration8</item>
-        <item>vibration9</item>
-        <item>vibration10</item>
+        <item>Mario</item>
+        <item>Ninja</item>
+        <item>Star Wars</item>
+        <item>Go Go Pwr</item>
+        <item>SOS</item>
+        <item>Dream</item>
+        <item>James</item>
+        <item>MJ</item>
+        <item>Muse</item>
+        <item>VB</item>
     </string-array>
 </resources>

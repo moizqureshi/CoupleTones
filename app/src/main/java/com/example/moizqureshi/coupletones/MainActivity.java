@@ -439,6 +439,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                  */
 
                 for(int i = 0; i < app.currUser.getLocations().size(); i++) {
+                    Log.d("# of locations: ", "" + app.currUser.getLocations().size());
                     Log.d("Test1", " " +
                             distanceBetween(new LatLng(location.getLatitude(), location.getLongitude()),
                                     app.currUser.getLocations().get(i).getLocation()) + " at " + i);
