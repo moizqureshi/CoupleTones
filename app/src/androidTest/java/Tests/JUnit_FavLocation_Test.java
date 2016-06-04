@@ -26,7 +26,7 @@ public class JUnit_FavLocation_Test extends InstrumentationTestCase
     public void setUp()
     {
 
-        loc1 = new FavLocation("Location 1 * 50 * -50");
+        loc1 = new FavLocation("Location 1 * 50 * -50 & 6 [ 0 % 4 ] 8");
         loc2 = new FavLocation("Location 2", location);
 
     }
@@ -43,6 +43,7 @@ public class JUnit_FavLocation_Test extends InstrumentationTestCase
     {
         LatLng location1 = new LatLng( 50, -50);
         LatLng location2 = new LatLng( 100, -100);
+
 
         assertEquals( location1, loc1.getLocation());
         assertEquals( location2, loc2.getLocation());
@@ -74,7 +75,7 @@ public class JUnit_FavLocation_Test extends InstrumentationTestCase
     @Test
     public void testToSTring()
     {
-        assertEquals("Location 1 * 50.0 * -50.0", loc1.toString() );
-        assertEquals("Location 2 * 90.0 * -100.0", loc2.toString());
+        assertEquals("Location 1 * 50.0 * -50.0 & 6 [ 0 % 4 ] 8", loc1.toString() );
+        assertEquals("Location 2 * 90.0 * -100.0 & 0 [ 0 % 0 ] 0", loc2.toString());
     }
 }
