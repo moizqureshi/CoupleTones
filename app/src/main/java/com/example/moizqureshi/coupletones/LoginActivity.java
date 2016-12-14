@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 /**
- * Created by moizqureshi on 5/2/16.
+ ** Created by moizqureshi on 5/2/16.
  */
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
